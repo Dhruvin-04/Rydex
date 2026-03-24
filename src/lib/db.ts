@@ -12,7 +12,7 @@ if(!cached){
     cached = global.mongooseConn = {conn: null, promise: null}
 }
 
-const connnectDB = async () => {
+const connectDB = async () => {
     if(cached.conn) return cached.conn
     if(!cached.promise){
         cached.promise = mongoose.connect(mongoDBUrl).then(c=>c.connection)
@@ -26,4 +26,4 @@ const connnectDB = async () => {
     }
 }
 
-export default connnectDB
+export default connectDB
