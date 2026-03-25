@@ -21,7 +21,7 @@ const HeroSection = () => {
           <Bus size={30}/>
           <Truck size={30}/>
         </motion.div>
-        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-4 shadow-xl px-10 rounded-full'>
+        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full'>
           Book Now
         </motion.button>
       </div>
