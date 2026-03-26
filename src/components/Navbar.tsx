@@ -1,15 +1,18 @@
 "use client"
-import React, { use } from 'react'
+import React, { use, useState } from 'react'
 import {motion} from "motion/react"
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from './ui/button'
+import AuthModel from './AuthModel'
 
 const NavItem = ['Home', 'Bookings', 'About Us', 'Contact']
 const Navbar = () => {
     const pathname = usePathname()
+    const [authOpen, setAuthOpen] = useState(false)
   return (
+    <>
     <motion.div initial={{y: -50, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{duration: 0.5}} className='fixed top-3 left-1/2 -translate-x-1/2 z-50 rounded-full w-[94%] md:w-[80%] bg-[#111111] text-white shadow-[0_15px_50px_rgba(0,0,0,0.7)] py-4'>
         <div className='flex items-center justify-between px-4 md:px-8 max-w-7xl mx-auto'>
             <Image
@@ -33,9 +36,13 @@ const Navbar = () => {
                     })
                 }
             </div>
-            <Button variant={'secondary'} className='rounded-full px-4 py-2 text-sm md:text-base lg:text-lg'>Login</Button>
+            <Button variant={'secondary'} className='rounded-full px-4 py-2 text-sm md:text-base lg:text-lg' onClick={() => setAuthOpen(true)}>
+                Login
+            </Button>
         </div>
     </motion.div>
+    <AuthModel isOpen={authOpen} onClose={() => setAuthOpen(false)}/>
+    </>
   )
 }
 

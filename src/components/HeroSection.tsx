@@ -3,7 +3,7 @@ import React from 'react'
 import { motion } from "motion/react"
 import { Bike, Bus, Car, Truck } from 'lucide-react'
 
-const HeroSection = () => {
+const HeroSection = ({ onAuthRequest }: { onAuthRequest: () => void }) => {
   return (
     <div className='w-full min-h-screen relative overflow-hidden'>
       <div className='absolute inset-0 bg-cover bg-center' style={{backgroundImage: "url('/heroImage.jpg')"}}/>
@@ -21,7 +21,7 @@ const HeroSection = () => {
           <Bus size={30}/>
           <Truck size={30}/>
         </motion.div>
-        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full'>
+        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full' onClick={onAuthRequest}>
           Book Now
         </motion.button>
       </div>

@@ -8,7 +8,7 @@ const PublicHome = () => {
   const [authOpen, setAuthOpen] = useState(false)
   return (
     <>
-        <HeroSection/>
+        <HeroSection onAuthRequest={() => setAuthOpen(true)}/>
         <VehicleSlider/>
         <AuthModel isOpen={authOpen} onClose={() => setAuthOpen(false)}/>
     </>
