@@ -5,7 +5,7 @@ import { set } from "mongoose";
 import { AnimatePresence, motion } from "motion/react"
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import React, { useState } from 'react'
+import { useState } from "react";
 
 type AuthModelProps = {
   isOpen: boolean;
