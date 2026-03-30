@@ -69,8 +69,9 @@ const AuthModel = ({ isOpen, onClose }: AuthModelProps) => {
 
   const handleGoogleSignIn = async () => {
     setLoading(true)
-    await signIn('google', { redirect: false })
+    await signIn('google')
     setLoading(false)
+    console.log('Google Login')
   }
 
   const handleOtpChange = (index: number, value: string) => {
@@ -106,7 +107,7 @@ const AuthModel = ({ isOpen, onClose }: AuthModelProps) => {
                   <p className="mt-1 text-xs text-gray-500">Premium Vehicle Booking</p>
                 </div>
                 <button className="w-full h-11 py-3 px-4 hover:text-white font-semibold rounded-xl hover:bg-gray-900 transition border border-black/20 flex items-center justify-center gap-3 text-sm" onClick={handleGoogleSignIn}>
-                  <Image src={"/google.png"} alt="Google Icon" width={30} height={30} />
+                  <Image src={"/google.png"} alt="Google Icon" width={30} height={30}/>
                   Continue with Google
                 </button>
 

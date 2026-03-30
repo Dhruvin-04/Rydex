@@ -20,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           placeholder: "*****",
         },
       },
-      async authorize(credentials, request){
+      async authorize(credentials){
         if(!credentials.email || !credentials.password){
           throw Error('Incomplete input credentials')
         }
