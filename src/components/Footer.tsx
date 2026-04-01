@@ -45,6 +45,13 @@ const Footer = () => {
             </div>
           </div>
         </div>
+
+        <div>
+        <div className='max-w-7xl mx-auto p-6 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4'>
+              <p>&copy; {new Date().getFullYear()} RYDEX. All rights reserved.</p>
+        </div>
+        </div>
+
       </motion.div>
     </div>
   )
