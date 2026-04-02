@@ -2,8 +2,13 @@
 import React from 'react'
 import { motion } from "motion/react"
 import { Bike, Bus, Car, Truck } from 'lucide-react'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/redux/store'
+import { useRouter } from 'next/navigation'
 
 const HeroSection = ({ onAuthRequest }: { onAuthRequest: () => void }) => {
+  const {userData} = useSelector((state: RootState) => state.user)
+  const router = useRouter()
   return (
     <div className='w-full min-h-screen relative overflow-hidden'>
       <div className='absolute inset-0 bg-cover bg-center' style={{backgroundImage: "url('/heroImage.jpg')"}}/>
@@ -21,7 +26,7 @@ const HeroSection = ({ onAuthRequest }: { onAuthRequest: () => void }) => {
           <Bus size={30}/>
           <Truck size={30}/>
         </motion.div>
-        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full' onClick={onAuthRequest}>
+        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full' onClick={() =>{!userData? onAuthRequest : router.push('/booking')}}>
           Book Now
         </motion.button>
       </div>
