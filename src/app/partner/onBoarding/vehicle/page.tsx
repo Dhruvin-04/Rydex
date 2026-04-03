@@ -2,8 +2,10 @@
 import React, { useState } from 'react'
 import { motion } from "motion/react"
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Bike, Car, CarTaxiFront, Package, Truck } from 'lucide-react'
+import { ArrowLeft, Bike, Car, CarTaxiFront, CircleDashed, Package, Truck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import { set } from 'mongoose'
 
 const Vehicles = [
   { id: "bike", description: "2 wheeler", Icon: Bike, label: "Bike" },
@@ -18,6 +20,24 @@ function page() {
     const [vehicleType, setVehicleType] = useState("")
     const [vehicleNumber, setVehicleNumber] = useState("")
     const [vehicleModel, setVehicleModel] = useState("")
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+
+    const handleVehicle = async()=>{
+        setError("")
+        try {
+            setLoading(true)
+            const {data} = await axios.post("/api/partner/onBoarding/vehicle",{
+                type: vehicleType, 
+                licensePlate: vehicleNumber, 
+                model: vehicleModel
+            })
+            setLoading(false)
+        } catch (error:any) {
+            setError(error.response?.data?.message || "An error occurred")
+            setLoading(false)
+        }
+    }
     return (
         <div className='min-h-screen bg-white flex items-center justify-center px-4'>
             <motion.div
@@ -72,20 +92,28 @@ function page() {
                             })}
                         </div>
                     </div>
+
                     <div>
                         <label htmlFor="vn" className='text-sm font-semibold text-gray-500'>Vehicle Number</label>
-                        <input type="text" id="vn" placeholder='MH12AB1234' className='mt-2 w-full border-b border-gray-300 pb-2 text-sm focus:outline-none focus:border-black transition' value={vehicleNumber} onChange={(e)=>setVehicleNumber(e.target.value)}/>
+                        <input type="text" id="vn" placeholder='MH12AB1234' className='mt-2 w-full border-b border-gray-300 pb-2 text-sm focus:outline-none focus:border-black transition' value={vehicleNumber} onChange={(e)=>setVehicleNumber(e.target.value.toUpperCase())}/>
                     </div>
+
                     <div>
                         <label htmlFor="vm" className='text-sm font-semibold text-gray-500'>Vehicle Model</label>
                         <input type="text" id="vm" placeholder='Suzuki i20' className='mt-2 w-full border-b border-gray-300 pb-2 text-sm focus:outline-none focus:border-black transition' value={vehicleModel} onChange={(e)=>setVehicleModel(e.target.value)}/>
                     </div>
+                    {error && (
+                        <p className='text-red-500 mt-4 text-sm'>*{error}</p>
+                    )}
+
                     <motion.button
                     whileHover={{scale: 1.02}}
+                    disabled={loading}
                     whileTap={{scale: 0.97}}
                     className='mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-40 transition'
+                    onClick={handleVehicle}
                     >
-                        Continue
+                        {loading? <CircleDashed className='text-white animate-spin'/> : "Continue"}
                     </motion.button>
                 </div>
 

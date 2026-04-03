@@ -11,6 +11,9 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
+      '@zegocloud/zego-uikit-prebuilt':
+        specifier: ^2.17.3
+        version: 2.17.3
       axios:
         specifier: ^1.13.6
         version: 1.14.0
@@ -1644,6 +1647,9 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
+
+  '@zegocloud/zego-uikit-prebuilt@2.17.3':
+    resolution: {integrity: sha512-PxRCLwPkwDudRiruHKVDodMZaOrvqW7cXv75RgZITmDpYD33vPLHaXmgZZ0uDhmQUpBZxJ63pj8mzdk/wC+WKA==}
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -5570,6 +5576,8 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
+
+  '@zegocloud/zego-uikit-prebuilt@2.17.3': {}
 
   accepts@2.0.0:
     dependencies:
