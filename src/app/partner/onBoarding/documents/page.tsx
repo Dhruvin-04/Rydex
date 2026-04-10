@@ -32,7 +32,7 @@ function page() {
             formData.append("aadhaar", docs.aadhaar as Blob);
             formData.append("license", docs.license as Blob);
             formData.append("rc", docs.rc as Blob);
-            const {data} = await axios.post("/api/partner/onboarding/documents", formData)
+            const {data} = await axios.post("/api/partner/onBoarding/documents", formData)
             setLoading(false);
         } catch (error: any) {
             setLoading(false);

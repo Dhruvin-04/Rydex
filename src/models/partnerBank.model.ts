@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 interface IPartnerBank {
     owner: mongoose.Types.ObjectId;
     status: "not_added" | "added" | "verified";
-    accountHolder: string;
+    accountHolderName: string;
     accountNumber: string;
     ifscCode: string;
     upi?: string;
@@ -30,7 +30,7 @@ const partnerBankSchema = new mongoose.Schema<IPartnerBank>({
         type: String,
         required: true
     },
-    accountHolder: {
+    accountHolderName: {
         type: String,
         required: true
     },

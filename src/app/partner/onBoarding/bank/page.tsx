@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { set } from 'mongoose'
 import axios from 'axios'
 
+const IFSC_REGEX = /^[A-Z]{4}0[A-Z0-9]{6}$/
 function page() {
     const router = useRouter()
     const [accountHolderName, setAccountHolderName] = useState('')
@@ -17,6 +18,13 @@ function page() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
+    const sanitizedIFSC = ifscCode.trim().toUpperCase()
+    const isNameValid = accountHolderName.trim().length >= 3
+    const isAccountNumberValid = accountNumber.trim().length >= 9 && accountNumber.trim().length <= 18
+    const isIFSCValid = IFSC_REGEX.test(sanitizedIFSC)
+    const isMobileNumberValid = /^\d{10}$/.test(mobileNumber.trim())
+    const isFormValid = isNameValid && isAccountNumberValid && isIFSCValid && isMobileNumberValid
+
     const handleBank = async () => {
         setLoading(true)
         setError('')
@@ -24,7 +32,7 @@ function page() {
             const {data} = await axios.post('/api/partner/onBoarding/bank', {
                 accountHolderName,
                 accountNumber,
-                ifscCode,
+                ifscCode: sanitizedIFSC,
                 mobileNumber,
                 upi
             })
@@ -64,29 +72,33 @@ function page() {
                         <label htmlFor="ahn" className='text-sm text-gray-500 font-semibold'>Account Holder Name</label>
                         <div className=' flex items-center gap-2 mt-2'>
                             <div className='text-gray-400'><BadgeCheck /></div>
-                            <input type="text" id='ahn' placeholder='Enter Account Holder Name' className='flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black' onChange={(e)=>setAccountHolderName(e.target.value)} value={accountHolderName}/>
+                            <input type="text" id='ahn' placeholder='Enter Account Holder Name' className={`flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black ${!isNameValid && accountHolderName.length > 0? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-black"}`} onChange={(e)=>setAccountHolderName(e.target.value)} value={accountHolderName}/>
                         </div>
+                        {!isNameValid && accountHolderName.length > 0 && <p className='text-sm text-red-500 mt-1'>Please enter a valid name (at least 3 characters)</p>}
                     </div>
                     <div>
                         <label htmlFor="ahn" className='text-sm text-gray-500 font-semibold'>Bank Account Number</label>
                         <div className=' flex items-center gap-2 mt-2'>
                             <div className='text-gray-400'><CreditCard /></div>
-                            <input type="text" id='ahn' placeholder='Enter Account Number' className='flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black' onChange={(e)=>setAccountNumber(e.target.value)} value={accountNumber}/>
+                            <input type="text" id='ahn' placeholder='Enter Account Number' className={`flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black ${!isAccountNumberValid && accountNumber.length > 0? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-black"}`} onChange={(e)=>setAccountNumber(e.target.value)} value={accountNumber}/>
                         </div>
+                        {!isAccountNumberValid && accountNumber.length > 0 && <p className='text-sm text-red-500 mt-1'>Please enter a valid account number (9-18 characters)</p>}
                     </div>
                     <div>
                         <label htmlFor="ahn" className='text-sm text-gray-500 font-semibold'>IFSC code</label>
                         <div className=' flex items-center gap-2 mt-2'>
                             <div className='text-gray-400'><Landmark /></div>
-                            <input type="text" id='ahn' placeholder='HDFC0001234' className='flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black' onChange={(e)=>setIfscCode(e.target.value)} value={ifscCode}/>
+                            <input type="text" id='ahn' placeholder='HDFC0001234' className={`flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black ${!isIFSCValid && ifscCode.length > 0? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-black"}`} onChange={(e)=>setIfscCode(e.target.value)} value={ifscCode.toUpperCase()}/>
                         </div>
+                        {!isIFSCValid && ifscCode.length > 0 && <p className='text-sm text-red-500 mt-1'>Please enter a valid IFSC code</p>}
                     </div>
                     <div>
                         <label htmlFor="ahn" className='text-sm text-gray-500 font-semibold'>Mobile Number</label>
                         <div className=' flex items-center gap-2 mt-2'>
                             <div className='text-gray-400'><Phone /></div>
-                            <input type="text" id='ahn' placeholder='10-digit mobile number' className='flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black' onChange={(e)=>setMobileNumber(e.target.value)} value={mobileNumber}/>
+                            <input type="text" id='ahn' placeholder='10-digit mobile number' className={`flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black ${!isMobileNumberValid && mobileNumber.length > 0? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-black"}`} onChange={(e)=>setMobileNumber(e.target.value)} value={mobileNumber}/>
                         </div>
+                        {!isMobileNumberValid && mobileNumber.length > 0 && <p className='text-sm text-red-500 mt-1'>Please enter a valid mobile number (10 digits)</p>}
                     </div>
                     <div>
                         <label htmlFor="ahn" className='text-sm text-gray-500 font-semibold'>UPI ID (optional)</label>
@@ -105,9 +117,9 @@ function page() {
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
+                    disabled={!isFormValid || loading}
                     className='mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-40 transition'
                     onClick={handleBank}
-                    disabled={loading}
                 >
                     {loading? <CircleDashed className='text-white animate-spin'/> : "Continue"}
                 </motion.button>
