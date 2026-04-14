@@ -53,6 +53,7 @@ export async function POST(req: Request) {
 
         if(user.partnerOnBoardingSteps < 1){
             user.partnerOnBoardingSteps = 1
+            console.log("step=1")
         }
         user.role = "partner"
         await user.save()

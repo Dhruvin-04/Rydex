@@ -57,11 +57,12 @@ export async function POST(req: Request) {
         const partnerDoc = await PartnerDocs.findOneAndUpdate(
             { owner: user._id },
             {$set: updatePayload},
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         )
 
         if(user.partnerOnBoardingSteps < 2){
             user.partnerOnBoardingSteps = 2
+            console.log("step=2")
         }
         await user.save()
         return Response.json(partnerDoc, { status: 200 })

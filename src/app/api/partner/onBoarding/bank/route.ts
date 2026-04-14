@@ -25,12 +25,13 @@ export async function POST(req: Request) {
         const bankDetails = await PartnerBank.findOneAndUpdate(
             { owner: user._id },
             { accountHolderName, accountNumber, ifscCode, upi, status: "added"},
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         )
 
         user.mobileNumber = mobileNumber
-        if(user.partneronBoardingSteps < 3) {
-            user.partneronBoardingSteps = 3
+        if(user.partnerOnBoardingSteps < 3) {
+            user.partnerOnBoardingSteps = 3
+            console.log("step=3")
         }
         await user.save()
         return Response.json(bankDetails, { status: 201 })
