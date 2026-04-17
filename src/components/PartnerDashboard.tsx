@@ -3,6 +3,8 @@ import { RootState } from '@/redux/store'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {motion} from 'motion/react'
+import { Check, Lock } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type Step = {
   id: number,
@@ -25,11 +27,19 @@ const totalSteps = steps.length
 const PartnerDashboard = () => {
   const [activeStep, setActiveStep] = useState(0)
   const {userData} = useSelector((state: RootState) => state.user)
+  const router = useRouter()
   useEffect(()=>{
     if(userData?.partnerOnBoardingSteps !== undefined){
-      setActiveStep(userData.partnerOnBoardingSteps)
+      setActiveStep(userData.partnerOnBoardingSteps+1)
     }
   }, [userData])
+
+  const goToStep = (step: Step) => {
+    if(step.route && step.id <= activeStep){
+      router.push(step.route)
+    }
+  }
+
   const progressPercentage = ((activeStep-1)/(totalSteps-1))*100
   return (
     <div className='min-h-screen bg-linear-to-br from-gray-100 to-gray-200 px-4 pt-28 pb-20'>
@@ -57,11 +67,21 @@ const PartnerDashboard = () => {
                     key={step.id}
                     whileHover={!locked?{scale: 1.1}: {}}
                     className='flex flex-col items-center z-10 cursor-pointer'
+                    onClick={() => goToStep(step)}
                     >
                       <div className={`w-14 h-14 rounded-full flex items-center justify-center border-2 transition-all ${completed? 'bg-black border-black text-white': isActive? 'border-black bg-white': 'border-gray-400 bg-white text-gray-400'}`}>
 
+                      {
+                        completed? (
+                          <Check size={20}/>
+                        ): locked? (
+                          <Lock size={20}/>
+                        ): (
+                          step.id
+                        )
+                      }
                       </div>
-                      
+                      <p className='mt-3 text-sm font-medium'>{step.title}</p>
                     </motion.div>
                   )
                 })}

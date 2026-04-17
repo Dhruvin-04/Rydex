@@ -28,10 +28,6 @@ export async function POST(req: Request) {
         }
 
         const vehicleNumber = licensePlate.toUpperCase()
-        const duplicateVehicle = await Vehicle.findOne({ licensePlate: vehicleNumber })
-        if(duplicateVehicle && duplicateVehicle.owner.toString() !== user._id.toString()) {
-            return Response.json({message: "License plate already in use"}, { status: 400 })
-        }
 
         let vehicle = await Vehicle.findOne({ owner: user._id })
         if(vehicle){
@@ -41,6 +37,11 @@ export async function POST(req: Request) {
             vehicle.status = "pending"
             await vehicle.save()
             return Response.json({message: "Vehicle updated successfully"}, { status: 200 })
+        }
+
+        const duplicateVehicle = await Vehicle.findOne({ licensePlate: vehicleNumber })
+        if(duplicateVehicle && duplicateVehicle.owner.toString() !== user._id.toString()) {
+            return Response.json({message: "License plate already in use"}, { status: 400 })
         }
 
         vehicle = await Vehicle.create({

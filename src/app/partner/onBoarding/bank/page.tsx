@@ -1,5 +1,5 @@
 'use client'
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, BadgeCheck, CheckCircle, CircleDashed, CreditCard, Landmark, Phone } from 'lucide-react'
@@ -44,6 +44,21 @@ function page() {
             console.log(err)
         } 
     }
+    useEffect(() => {
+        const handleGetBank = async () => {
+        try {
+            const {data} = await axios.get('/api/partner/onBoarding/bank')
+            setAccountHolderName(data.bankDetails.accountHolderName)
+            setAccountNumber(data.bankDetails.accountNumber)
+            setIfscCode(data.bankDetails.ifscCode)
+            setMobileNumber(data.mobileNumber)
+            setUpi(data.bankDetails.upi)
+        } catch (err: any) {
+
+        } 
+    }
+    handleGetBank()
+    }, [])
     return (
         <div className='min-h-screen bg-white flex items-center justify-center px-4'>
             <motion.div

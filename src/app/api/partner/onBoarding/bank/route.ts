@@ -56,7 +56,7 @@ export async function GET(req: Request) {
 
         const bankDetails = await PartnerBank.findOne({ owner: user._id })
         if (bankDetails) {
-            return Response.json(bankDetails, { status: 200 })
+            return Response.json({bankDetails, mobileNumber: user.mobileNumber}, { status: 200 })
         }
         return Response.json({message: "Bank details not found"}, { status: 404 })
 

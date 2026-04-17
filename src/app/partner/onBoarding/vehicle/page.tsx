@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from "motion/react"
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Bike, Car, CarTaxiFront, CircleDashed, Package, Truck } from 'lucide-react'
@@ -38,6 +38,21 @@ function page() {
             setLoading(false)
         }
     }
+    useEffect(()=>{
+        const handleGetVehicle = async()=>{
+        setError("")
+        try {
+            const {data} = await axios.get("/api/partner/onBoarding/vehicle")
+            setVehicleType(data.type)
+            setVehicleNumber(data.licensePlate)
+            setVehicleModel(data.model)
+
+        } catch (error:any) {
+            console.log(error)
+        }
+    }
+    handleGetVehicle()
+    }, [])
     return (
         <div className='min-h-screen bg-white flex items-center justify-center px-4'>
             <motion.div
