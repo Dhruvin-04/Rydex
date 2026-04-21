@@ -31,10 +31,12 @@ export async function GET(req: NextRequest) {
         }))
 
         return NextResponse.json({
-            totalPartners,
-            totalApprovedPartners,
-            totalPendingPartners,
-            totalRejectedPartners,
+            stats:{
+                totalPartners,
+                totalApprovedPartners,
+                totalPendingPartners,
+                totalRejectedPartners,
+            },
             pendingPartnersReviews
         }, { status: 200
         })

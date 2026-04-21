@@ -11,12 +11,23 @@ export default async function Home() {
   const session = await auth()
   await connectDB()
   const user = await User.findOne({ email: session?.user?.email })
-  
+
   return (
     <div className="w-full min-h-screen bg-zinc-50 font-sans text-black">
-      <Navbar/>
-      {user?.role == "partner"?<PartnerDashboard/>:(user?.role == "admin"?<AdminDashboard/>:<PublicHome/>)}
-      <Footer/>
+
+      {user?.role == "partner" ?
+        <>
+          <Navbar />
+          <PartnerDashboard />
+        </> : (user?.role == "admin" ?
+          <AdminDashboard /> :
+          <>
+            <Navbar />
+            <PublicHome />
+          </>
+        )}
+
+      <Footer />
     </div>
   );
 }
