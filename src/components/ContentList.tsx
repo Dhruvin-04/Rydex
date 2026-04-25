@@ -2,8 +2,10 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { ArrowRight, CheckCircle, User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 const ContentList = ({ data, type }: any) => {
+    const router = useRouter()
     if (data.length === 0) {
         return (
             <motion.div
@@ -52,6 +54,9 @@ const ContentList = ({ data, type }: any) => {
                             <motion.button
                                 whileTap={{scale: 0.96}}
                                 className='flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-white text-sm font-semibold transition-colors'
+                                onClick={()=>{
+                                    type == "partner"?router.push(`/admin/reviews/partner/${item._id}`):router.push(`/admin/reviews/vehicle/${item._id}`)
+                                }}
                             >
                                 Review <ArrowRight size={15} />
                             </motion.button>

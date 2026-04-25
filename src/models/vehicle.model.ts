@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IVehicle {
+export interface IVehicle {
     owner: mongoose.Types.ObjectId;
     type: 'bike' | 'car' | 'bus' | 'truck' | 'auto';
     imageUrl?: string;

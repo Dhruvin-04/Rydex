@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface IPartnerBank {
+export interface IPartnerBank {
     owner: mongoose.Types.ObjectId;
     status: "not_added" | "added" | "verified";
     accountHolderName: string;

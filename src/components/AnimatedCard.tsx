@@ -1,0 +1,22 @@
+'use client'
+import React from 'react'
+import {motion} from 'motion/react'
+
+const AnimatedCard = ({title, icon, children}: any) => {
+  return (
+    <motion.div
+      whileHover={{y: -4}}
+      className='bg-white rounded-4xl p-8 shadow-xl space-y-6'
+    >
+      
+        <div className='flex items-center gap-3 mb-4'>
+          {icon}
+          <h3 className='text-lg font-semibold'>{title}</h3>
+        </div>
+        {children}
+      
+    </motion.div>
+  )
+}
+
+export default AnimatedCard
