@@ -29,10 +29,9 @@ export async function POST(req: Request) {
         )
 
         user.mobileNumber = mobileNumber
-        if(user.partnerOnBoardingSteps < 3) {
-            user.partnerOnBoardingSteps = 3
-            console.log("step=3")
-        }
+        user.partnerOnBoardingSteps = 3
+
+        user.partnerStatus = "pending"
         await user.save()
         return Response.json(bankDetails, { status: 201 })
 
