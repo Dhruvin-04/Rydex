@@ -3,8 +3,11 @@ import { RootState } from '@/redux/store'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {motion} from 'motion/react'
-import { Check, Lock } from 'lucide-react'
+import { Check, Clock, Lock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import RejectionCard from './RejectionCard'
+import StatusCard from './StatusCard'
+import ActionCard from './ActionCard'
 
 type Step = {
   id: number,
@@ -89,6 +92,56 @@ const PartnerDashboard = () => {
           </div>
 
         </div>
+
+        {
+          userData?.partnerOnBoardingSteps == 4 && userData?.partnerStatus == "rejected" && (
+            <RejectionCard 
+              title="Partner Rejected"
+              reason={userData.rejectionReason}
+              actionLabel={'Review and Update'}
+              onAction={() => router.push("/partner/onBoarding/vehicle")}
+            />
+          )
+        }
+
+        {
+          activeStep == 4 && userData?.partnerStatus == "pending" && (
+            <StatusCard 
+              icon={<Clock size={18}/>}
+              title={"Under Review"}
+              desc={"Your application is currently under review. We will notify you once the review process is complete."}
+            />
+          )
+        }
+        {
+          activeStep == 5 && userData?.videoKycStatus == "approved" ? (
+            <StatusCard
+              icon={<Check size={18}/>}
+              title={"Video KYC Approved"}
+              desc={"Your video KYC has been approved. Please proceed to the next steps to complete your onboarding."}
+            />
+          ): activeStep == 5 && userData?.videoKycStatus == "rejected" ? (
+            <RejectionCard 
+              title="Video KYC Rejected"
+              reason={userData?.videoKycRejectionReason}
+              actionLabel={'Request Again'}
+              
+            />
+          ): activeStep == 5 && userData?.videoKycStatus == "in_progress" && userData?.videoKycRoomId ?(
+            <ActionCard
+              icon={<Clock size={18}/>}
+              title={"Admin started the Video KYC Call"}
+              button={"Join Call"}
+              onClick={() => router.push(`/video-kyc/${userData.videoKycRoomId}`)}
+            />
+          ): activeStep == 5 && (
+            <StatusCard
+              icon={<Clock size={18}/>}
+              title={"Waiting for Admin"}
+              desc={"Your video KYC is pending. An admin will start the video KYC call once they review your application."}
+            />
+          )
+        }
 
       </div>
     </div>

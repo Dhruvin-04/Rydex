@@ -28,15 +28,23 @@ const AdminDashboard = () => {
       const { data } = await axios.get("/api/admin/dashboard")
       setStats(data.stats)
       setPartnerReviews(data.pendingPartnersReviews)
-      // setPendingKYC(data.pendingKYC)
-      // setVehicleReviews(data.vehicleReviews)
     } catch (error) {
       console.error("Error fetching admin dashboard data:", error)
     }
   }
+  const handleGetPendingKYC = async () => {
+    try {
+      const { data } = await axios.get("/api/admin/video-kyc/pending")
+      setPendingKYC(data.partners || [])
+    } catch (error) {
+      console.error("Error fetching pending video KYC requests:", error)
+    }
+  }
   useEffect(() => {
     handleGetData()
+    handleGetPendingKYC()
   }, [])
+
   return (
     <div className='min-h-screen bg-linear-to-br from-gray-100 to-gray-200'>
       <div className='sticky top-0 bg-white/80 backdrop-blur-lg border-b z-40'>
