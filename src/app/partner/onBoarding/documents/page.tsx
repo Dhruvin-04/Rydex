@@ -34,6 +34,7 @@ function page() {
             formData.append("rc", docs.rc as Blob);
             const { data } = await axios.post("/api/partner/onBoarding/documents", formData)
             setLoading(false);
+            router.push("/")
         } catch (error: any) {
             setLoading(false);
             setError(error?.response?.data?.message || "Something went wrong. Please try again.");

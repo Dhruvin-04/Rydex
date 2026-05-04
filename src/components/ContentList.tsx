@@ -45,8 +45,8 @@ const ContentList = ({ data, type }: any) => {
                 </p>
             </div>
             {data.map((item: any, index: number) => {
-                const name = item.name
-                const email = item.email
+                const name = item.name || item.owner.name
+                const email = item.email || item.owner.email
                 return (
                     <motion.div
                         key={item._id || index}

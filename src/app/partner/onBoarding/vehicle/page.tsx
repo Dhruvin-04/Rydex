@@ -33,6 +33,7 @@ function page() {
                 model: vehicleModel
             })
             setLoading(false)
+            router.push("/")
         } catch (error:any) {
             setError(error.response?.data?.message || "An error occurred")
             setLoading(false)

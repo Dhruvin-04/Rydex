@@ -38,6 +38,7 @@ function page() {
             })
             setLoading(false)
             console.log(data)
+            router.push("/")
         } catch (err: any) {
             setError(err.response?.data?.message || 'Something went wrong')
             setLoading(false)
