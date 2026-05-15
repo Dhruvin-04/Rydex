@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 
+export type vehicleType = 'bike' | 'car' | 'bus' | 'truck' | 'auto';
+
 export interface IVehicle {
     owner: mongoose.Types.ObjectId;
-    type: 'bike' | 'car' | 'bus' | 'truck' | 'auto';
+    type: vehicleType;
     imageUrl?: string;
     model: string;
     baseFare?: number;
