@@ -95,7 +95,7 @@ export async function GET(req: Request) {
         if(vehicle){
             return Response.json(vehicle, { status: 200 })
         }else{
-            return null
+            return Response.json(null, { status: 200 })
         }
     } catch (error) {
         return Response.json({message: "Error processing request"}, { status: 500 })
