@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import AdminDashboard from "@/components/AdminDashboard";
 import Footer from "@/components/Footer";
+import GeoUpdater from "@/components/GeoUpdater";
 import Navbar from "@/components/Navbar";
 import PartnerDashboard from "@/components/PartnerDashboard";
 import PublicHome from "@/components/PublicHome";
@@ -14,7 +15,7 @@ export default async function Home() {
 
   return (
     <div className="w-full min-h-screen bg-zinc-50 font-sans text-black">
-
+      <GeoUpdater userId={user?._id?.toString()} />
       {user?.role == "partner" ?
         <>
           <Navbar />

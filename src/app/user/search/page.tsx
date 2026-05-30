@@ -1,13 +1,16 @@
 'use client'
-import React, { useState, Suspense } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
 import {motion} from 'motion/react'
 import { ArrowLeft, MapPin, Navigation } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { vehicleType } from '@/models/vehicle.model'
 import { param } from 'motion/react-client'
 import dynamic from 'next/dynamic'
+import axios from 'axios'
 
 const SearchMap = dynamic(() => import('@/components/SearchMap'), { ssr: false })
+
+
 
 const SearchContent = () => {
   const router = useRouter()
@@ -16,11 +19,30 @@ const SearchContent = () => {
   const [drop, setDrop] = useState(params.get('drop') || '')
   const [km, setKm] = useState<number>(0)
   const mobile = params.get('mobile') || ''
-  const pickUpLat = Number(params.get('pickupLat'))
-  const pickUpLng = Number(params.get('pickupLng'))
-  const dropLat = Number(params.get('dropLat'))
-  const dropLng = Number(params.get('dropLng'))
+  const pickUpLat = Number(params.get('pickUpLatitude'))
+  const pickUpLng = Number(params.get('pickUpLongitude'))
+  const dropLat = Number(params.get('dropLatitude'))
+  const dropLng = Number(params.get('dropLongitude'))
   const vehicle = params.get('vehicle')
+
+  const getNearbyVehicles = async (latitude: number, longitude: number, vehicleType: string | null) => {
+  if (!latitude || !longitude || !vehicleType) return;
+  console.log('Fetching nearby vehicles with:', { latitude, longitude, vehicleType })
+  try{
+    const {data} = await axios.post('/api/vehicles/near-by', {
+      latitude,
+      longitude,
+      vehicleType
+    })
+    console.log('Nearby Vehicles:', data)
+  }catch(err){
+    console.error('Error fetching nearby vehicles:', err)
+  }
+}
+
+useEffect(() => {
+  getNearbyVehicles(pickUpLat, pickUpLng, vehicle)
+}, [pickUpLat, pickUpLng])
     
   return (
     <div className='min-h-screen bg-zinc-100 text-zinc-900 overflow-x-hidden'>

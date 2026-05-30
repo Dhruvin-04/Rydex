@@ -75,7 +75,6 @@ const SearchMap = ({ pickup, drop, onChange, onDistance }: { pickup: string; dro
   const loadRoute = async (p: [number, number], d: [number, number]) => {
       try {
         const { data } = await axios.get(`https://router.project-osrm.org/route/v1/driving/${p[1]},${p[0]};${d[1]},${d[0]}?overview=full&geometries=geojson`)
-        console.log(data)
         if (!data.routes.length) return;
         setRoute(data.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]]))
         const distanceInKm = (data.routes[0].distance / 1000).toFixed(2)
