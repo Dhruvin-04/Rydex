@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         const partnersIds = parters.map(p => p._id)
         console.log("Nearby Partner IDs:", partnersIds)
         if(partnersIds.length === 0) {
-            return NextResponse.json({message: 'No nearby vehicles found'}, {status: 200})
+            return NextResponse.json([], {status: 200})
         }
 
         const vehicles = await Vehicle.find({

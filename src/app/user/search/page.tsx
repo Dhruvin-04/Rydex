@@ -1,15 +1,23 @@
 'use client'
 import React, { useState, Suspense, useEffect } from 'react'
-import {motion} from 'motion/react'
-import { ArrowLeft, MapPin, Navigation } from 'lucide-react'
+import {AnimatePresence, motion} from 'motion/react'
+import { ArrowLeft, Bike, Car, MapPin, Navigation, RefreshCcw, Search, Truck, Zap } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { vehicleType } from '@/models/vehicle.model'
+import { IVehicle } from '@/models/vehicle.model'
 import { param } from 'motion/react-client'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
+import VehicleCard from '@/components/VehicleCard'
 
 const SearchMap = dynamic(() => import('@/components/SearchMap'), { ssr: false })
 
+const VEHICLE_META: any = {
+  bike: { label: 'Bike', Icon: Bike },
+  auto: { label: 'Auto', Icon: Car },
+  car: { label: 'Car', Icon: Car },
+  loading: { label: 'Loading', Icon: Truck },
+  truck: { label: 'Truck', Icon: Truck },
+}
 
 
 const SearchContent = () => {
@@ -18,31 +26,37 @@ const SearchContent = () => {
   const [pickup, setPickup] = useState(params.get('pickup') || '')
   const [drop, setDrop] = useState(params.get('drop') || '')
   const [km, setKm] = useState<number>(0)
+  const [vehicles, setVehicles] = useState<IVehicle[]>([])
   const mobile = params.get('mobile') || ''
   const pickUpLat = Number(params.get('pickUpLatitude'))
   const pickUpLng = Number(params.get('pickUpLongitude'))
   const dropLat = Number(params.get('dropLatitude'))
   const dropLng = Number(params.get('dropLongitude'))
-  const vehicle = params.get('vehicle')
+  const vehicle = params.get('vehicle') || ''
+  const [loading, setLoading] = useState(false)
+  const meta = VEHICLE_META[vehicle]
 
   const getNearbyVehicles = async (latitude: number, longitude: number, vehicleType: string | null) => {
   if (!latitude || !longitude || !vehicleType) return;
   console.log('Fetching nearby vehicles with:', { latitude, longitude, vehicleType })
+  setLoading(true)
   try{
     const {data} = await axios.post('/api/vehicles/near-by', {
       latitude,
       longitude,
       vehicleType
     })
-    console.log('Nearby Vehicles:', data)
+    setLoading(false)
+    setVehicles(data)
   }catch(err){
     console.error('Error fetching nearby vehicles:', err)
+    setLoading(false)
   }
 }
 
 useEffect(() => {
   getNearbyVehicles(pickUpLat, pickUpLng, vehicle)
-}, [pickUpLat, pickUpLng])
+}, [pickUpLat, pickUpLng, pickup]) 
     
   return (
     <div className='min-h-screen bg-zinc-100 text-zinc-900 overflow-x-hidden'>
@@ -95,6 +109,89 @@ useEffect(() => {
               <Navigation size={18} className='text-zinc-400 shrink-0 mt-2'/>
             </div>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{delay: 0.16}}
+            className='flex items-baseline justify-between mb-4'
+          >
+            <div>
+              <h2 className='text-lg font-medium text-zinc-900 tracking-tight'>
+                {loading ? 'Finding vehicles...' : vehicles.length > 0 ? `Available` : 'No nearby vehicles found'}
+              </h2>
+              {
+                meta && <div className='text-sm text-zinc-500 mt-1'>
+                  {meta.label} rides nearby you
+                </div>
+              }
+            </div>
+            <AnimatePresence mode='wait'>
+                  {loading ? (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className='text-sm text-zinc-500 flex items-center gap-1 rounded-full'
+                    >
+                      <div className='w-3 h-3 bg-zinc-500 rounded-full'/>
+                      <span className='text-sm text-zinc-500'>Searching...</span>
+                    </motion.div>
+                  ):
+                    vehicles.length > 0 ? (
+                      <motion.div
+                        key='live'
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className='text-sm bg-emerald-50 border border-emerald-200 flex items-center gap-1 rounded-full py-2 px-3 text-emerald-600'
+                      >
+                        <Zap size={11} className='text-emerald-600' fill='currentColor'/>
+                        <span className='text-sm font-bold text-emerald-700'>Live</span>
+                      </motion.div>
+                    ):null
+                  }
+            </AnimatePresence>   
+          </motion.div>
+          <AnimatePresence>
+              {vehicles.length == 0 && !loading && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className='text-sm text-zinc-500 mt-6 flex flex-col items-center gap-2'
+                >
+                  <div className='w-16 h-16 bg-zinc-200 rounded-full flex items-center justify-center'>
+                    <Search size={24} className='text-zinc-500'/>
+                  </div>
+                  <p className='text-zinc-900 font-bold text-base mb-1'>Vehicles Not Found</p>
+                  <p className='text-sm text-zinc-500'>Try adjusting your pickup location or check back later.</p>
+                  <motion.button
+                    whileTap={{scale: 0.88}}
+                    onClick={() => getNearbyVehicles(pickUpLat, pickUpLng, vehicle)}
+                    className='mt-5 rounded-2xl flex items-center cursor-pointer shadow-md gap-2 bg-zinc-900 text-white text-sm font-semibold px-6 py-3 hover:bg-zinc-800 transition-colors'
+                  >
+                    <RefreshCcw size={20} />Retry Search
+                  </motion.button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
+              {vehicles.map((v, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{delay: i * 0.06, duration: 0.4, ease:[0.22, 1, 0.36, 1]}}
+                >
+                  <VehicleCard 
+                    vehicle={v}
+                    distance={km}
+                  />
+                </motion.div>
+              ))}
+            </div>
         </div>
       </motion.div>
     </div>
