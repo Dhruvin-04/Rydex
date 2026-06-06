@@ -3,7 +3,7 @@ import React, { useState, Suspense, useEffect } from 'react'
 import {AnimatePresence, motion} from 'motion/react'
 import { ArrowLeft, Bike, Car, MapPin, Navigation, RefreshCcw, Search, Truck, Zap } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { IVehicle } from '@/models/vehicle.model'
+import { vehicleType } from '@/models/vehicle.model'
 import { param } from 'motion/react-client'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
@@ -19,6 +19,22 @@ const VEHICLE_META: any = {
   truck: { label: 'Truck', Icon: Truck },
 }
 
+export interface IVehicle {
+    owner: string
+    type: vehicleType;
+    imageUrl?: string;
+    model: string;
+    baseFare?: number;
+    pricePerKm?: number;
+    waitingCharge?: number;
+    licensePlate: string;
+    status: "approved" | "pending" | "rejected";
+    rejectionReason?: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 
 const SearchContent = () => {
   const router = useRouter()
@@ -26,13 +42,13 @@ const SearchContent = () => {
   const [pickup, setPickup] = useState(params.get('pickup') || '')
   const [drop, setDrop] = useState(params.get('drop') || '')
   const [km, setKm] = useState<number>(0)
-  const [vehicles, setVehicles] = useState<IVehicle[]>([])
   const mobile = params.get('mobile') || ''
   const pickUpLat = Number(params.get('pickUpLatitude'))
   const pickUpLng = Number(params.get('pickUpLongitude'))
   const dropLat = Number(params.get('dropLatitude'))
   const dropLng = Number(params.get('dropLongitude'))
   const vehicle = params.get('vehicle') || ''
+  const [vehicles, setVehicles] = useState<IVehicle[]>([])
   const [loading, setLoading] = useState(false)
   const meta = VEHICLE_META[vehicle]
 
@@ -188,6 +204,21 @@ useEffect(() => {
                   <VehicleCard 
                     vehicle={v}
                     distance={km}
+                    onBook={() => {
+                      const url = new URLSearchParams({
+                        pickup,
+                        drop,
+                        vehicle: v.type,
+                        driverId: v.owner,
+                        fare: String((v.baseFare || 0) + (v.pricePerKm || 0) * km),
+                        pickUpLatitude: String(pickUpLat),
+                        pickUpLongitude: String(pickUpLng),
+                        dropLatitude: String(dropLat),
+                        dropLongitude: String(dropLng),
+                        mobile,
+                      })
+                      router.push(`/user/checkout?${url.toString()}`)
+                    }}
                   />
                 </motion.div>
               ))}

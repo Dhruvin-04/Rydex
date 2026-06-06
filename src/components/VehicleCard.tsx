@@ -1,5 +1,5 @@
 'use client'
-import { IVehicle } from '@/models/vehicle.model';
+import { vehicleType } from '@/models/vehicle.model';
 import React from 'react'
 import { motion } from 'motion/react'
 import { ArrowRight, Bike, Car, Clock, Gauge, IndianRupee, Star, Truck } from 'lucide-react';
@@ -12,7 +12,23 @@ const VEHICLE_META: any = {
     truck: { label: 'Truck', Icon: Truck },
 }
 
-const VehicleCard = ({ vehicle, distance }: { vehicle: IVehicle; distance: number | undefined }) => {
+export interface IVehicle {
+    owner: string
+    type: vehicleType;
+    imageUrl?: string;
+    model: string;
+    baseFare?: number;
+    pricePerKm?: number;
+    waitingCharge?: number;
+    licensePlate: string;
+    status: "approved" | "pending" | "rejected";
+    rejectionReason?: string;
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const VehicleCard = ({ vehicle, distance, onBook }: { vehicle: IVehicle; distance: number | undefined; onBook: () => void }) => {
     const { Icon, label } = VEHICLE_META[vehicle.type] || { label: 'Unknown', Icon: Car }
     let estimated: number = 0
     if (vehicle.baseFare && vehicle.pricePerKm && distance) {
@@ -110,6 +126,7 @@ const VehicleCard = ({ vehicle, distance }: { vehicle: IVehicle; distance: numbe
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className='bg-zinc-900 hover:bg-black text-white font-bold py-2 px-2 rounded-2xl shadow-md transition-colors duration-200 flex items-center justify-center mt-4'
+                        onClick={onBook}
                     >
                         Book
                         <motion.div
