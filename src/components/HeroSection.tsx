@@ -26,7 +26,7 @@ const HeroSection = ({ onAuthRequest }: { onAuthRequest: () => void }) => {
           <Bus size={30}/>
           <Truck size={30}/>
         </motion.div>
-        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full' onClick={() =>{!userData? onAuthRequest : router.push('/book')}}>
+        <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className='mt-8 font-semibold bg-white hover:bg-gray-200 text-gray-900 py-3 shadow-xl px-8 rounded-full' onClick={() =>{!userData? onAuthRequest : router.push('/user/book')}}>
           Book Now
         </motion.button>
       </div>

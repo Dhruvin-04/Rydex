@@ -13,6 +13,7 @@ import { Bike, Car, ChevronRight, LogOut, Menu, Truck, X } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { setUserData } from '@/redux/userSlice'
 import { set } from 'mongoose'
+import axios from 'axios'
 
 const NavItem = ['Home', 'Bookings', 'About Us', 'Contact']
 const Navbar = () => {
@@ -21,6 +22,7 @@ const Navbar = () => {
     const [authOpen, setAuthOpen] = useState(false)
     const [profileOpen, setProfileOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [pendingCount, setPendingCount] = useState(0)
     const { userData } = useSelector((state: RootState) => state.user)
     useEffect(() => {
         { userData && console.log('User data aa gaya') }
@@ -32,6 +34,22 @@ const Navbar = () => {
         dispatch(setUserData(null))
         setProfileOpen(false)
     }
+
+    const fetchCount = async () => {
+        try {
+            const {data} = await axios.get('/api/partner/bookings/pending-requests-count')
+            setPendingCount(data)
+            console.log('Pending requests count:', data)
+        }catch (error) {
+            console.error('Error fetching pending requests count:', error)
+        }
+    }
+
+    useEffect(() => {
+        if(userData?.role === 'partner'){
+            fetchCount()
+        }
+    }, [userData?.role])
 
     return (
         <>
@@ -46,17 +64,32 @@ const Navbar = () => {
                         priority={true}
                     />
                     <div className='hidden md:flex items-center gap-10'>
-                        {NavItem.map((item, index) => {
-                            let href
-                            if (item === "Home") {
-                                href = `/`
-                            } else {
-                                href = `/${item.toLowerCase()}`
-                            }
-                            var active = href === pathname
-                            return <Link key={index} href={href} className={`text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition ${active ? 'text-white' : 'text-gray-400 hover:text-white'}`}>{item}</Link>
-                        })
+                        {
+                            userData?.role === 'partner' ? (
+                                <>
+                                    <Link className='relative text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition' href='/'>Home</Link>
+                                    <Link className='relative text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition' href='/partner/pending-requests'>Pending Requests
+                                    <span className='bg-white text-black rounded-full w-5 h-5 flex items-center justify-center text-xs ml-2 absolute -top-1 -right-5'>{pendingCount ?? 0}</span>
+                                    </Link>
+                                    <Link className='relative text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition' href='/partner/bookings'>Bookings</Link>
+                                    <Link className='relative text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition' href='/partner/active-ride'>Active Ride</Link>
+                                </>
+                            ) : (
+                                
+                                    NavItem.map((item, index) => {
+                                        let href
+                                        if (item === "Home") {
+                                            href = `/`
+                                        } else {
+                                            href = `/${item.toLowerCase()}`
+                                        }
+                                        var active = href === pathname
+                                        return <Link key={index} href={href} className={`text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition ${active ? 'text-white' : 'text-gray-400 hover:text-white'}`}>{item}</Link>
+                                    })
+                                
+                            )
                         }
+
                     </div>
                     <div className='flex items-center gap-3 relative'>
                         <div className='hidden md:block relative'>
@@ -83,7 +116,7 @@ const Navbar = () => {
                                                         {userData.role}
                                                     </p>
                                                     {userData.role != 'partner' && (
-                                                        <div onClick={()=>router.push('/partner/onBoarding/vehicle')} className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl'>
+                                                        <div onClick={() => router.push('/partner/onBoarding/vehicle')} className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl'>
                                                             <div className='flex -space-x-2'>
                                                                 <div className='w-6 h-6 bg-black text-white flex items-center justify-center rounded-full'><Bike size={14} /></div>
                                                                 <div className='w-6 h-6 bg-black text-white flex items-center justify-center rounded-full'><Car size={14} /></div>
@@ -195,7 +228,7 @@ const Navbar = () => {
                                     {userData.role}
                                 </p>
                                 {userData.role != 'partner' && (
-                                    <div onClick={()=>router.push('/partner/onBoarding/vehicle')} className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl'>
+                                    <div onClick={() => router.push('/partner/onBoarding/vehicle')} className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl'>
                                         <div className='flex -space-x-2'>
                                             <div className='w-6 h-6 bg-black text-white flex items-center justify-center rounded-full'><Bike size={14} /></div>
                                             <div className='w-6 h-6 bg-black text-white flex items-center justify-center rounded-full'><Car size={14} /></div>

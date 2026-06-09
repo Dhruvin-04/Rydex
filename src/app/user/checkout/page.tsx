@@ -1,8 +1,9 @@
 'use client'
 import React, { useState } from 'react'
-import { motion } from 'motion/react'
-import { Bike, Car, IndianRupee, MapPin, Navigation, Truck } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
+import { ArrowRight, Bike, Car, Clock, CreditCard, IndianRupee, MapPin, Navigation, Shield, Truck } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import axios from 'axios'
 
 const VEHICLE_META: any = {
     bike: { label: 'Bike', Icon: Bike },
@@ -11,6 +12,8 @@ const VEHICLE_META: any = {
     loading: { label: 'Loading', Icon: Truck },
     truck: { label: 'Truck', Icon: Truck },
 }
+
+type Status = "idle" | "requested" | "awaiting_payment" | "confirmed" | "payment" | "cancelled" | "rejected" | "expired";
 
 const page = () => {
     const router = useRouter()
@@ -23,8 +26,35 @@ const page = () => {
       const dropLat = Number(params.get('dropLatitude'))
       const dropLng = Number(params.get('dropLongitude'))
       const vehicle = params.get('vehicle') || ''
-      const fare = params.get('fare') || ''
+      const driverId = params.get('driverId') || ''
+      const vehicleId = params.get('vehicleId') || ''
+      const fare = Math.round(Number(params.get('fare')) || 0)
       const {Icon, label} = VEHICLE_META[vehicle]
+      const [status, setStatus] = useState<Status>("idle")
+      const [handle, setHandle] = useState<Status>('idle')
+      const handleRequestBooking = async () => {
+        try{
+            const {data} = await axios.post('/api/booking/create', {
+                driverId,
+                vehicleId: vehicleId,
+                pickupAddress: pickup,
+                dropAddress: drop,
+                pickupLocation: {
+                    type: "Point",
+                    coordinates: [pickUpLng, pickUpLat]
+                },
+                dropLocation: {
+                    type: "Point",
+                    coordinates: [dropLng, dropLat]
+                },
+                fare,
+                mobileNumber: mobile
+            })
+            console.log(data)
+        }catch(error: any){
+            console.error(error.response?.data || error.message)
+        }
+      }
   return (
     <div className='min-h-screen bg-zinc-100 px-4 py-12'>
         <div className='relative max-w-6xl mx-auto z-10'>
@@ -110,6 +140,53 @@ const page = () => {
                     className="bg-white rounded-3xl px-4 border border-zinc-200 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex flex-col"
                 >
                     <div className='h-1 bg-zinc-900'/>
+                    <div className='p-8 sm:p-10 flex flex-col gap-6 flex-1'>
+                        <AnimatePresence mode='wait'>
+                            {
+                                status === "idle" && (
+                                    <motion.div
+                                        key="idle"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20 }}
+                                        className='flex flex-col flex-1 justify-between gap-4'
+                                    >
+                                        <div>
+                                            <p className='font-black text-zinc-700 uppercase tracking-wider text-sm'>Ready to go?</p>
+                                            <h3 className='text-2xl font-bold text-zinc-900 tracking-tight'>Confirm Your Ride</h3>
+                                            <div className='bg-zinc-50 border border-zinc-100 rounded-2xl p-4 mt-6'>
+                                                {
+                                                    [
+                                                        {icon: <Clock size={14}/>, text: "Estimated arrival time, 2 mins"},
+                                                        {icon: <Shield size={14}/>, text: "Verified & Insured drivers only"},
+                                                        {icon: <CreditCard size={14}/>, text: "Pay after driver accepts"},
+                                                        
+                                                    ].map((item, index)=>(
+                                                        <div key={index} className='flex items-center gap-3 mb-3 last:mb-0'>
+                                                            <div className='w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center text-zinc-600 shrink-0'>
+                                                                {item.icon}
+                                                            </div>
+                                                            <p className='text-zinc-600 text-xs font-medium'>{item.text}</p>
+                                                        </div>
+                                                        
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+                                        <motion.button
+                                            onClick={handleRequestBooking}
+                                            whileTap={{ scale: 0.95 }}
+                                            whileHover={{ scale: 1.05 }}
+                                            className='w-full h-14 mt-8 bg-zinc-900 hover:bg-black disabled:opacity-40 text-white font-black text-sm rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-md'
+                                        >
+                                            <span className='flex items-center gap-2'>Request Ride <ArrowRight size={16}/></span>
+                                        </motion.button>
+                                    </motion.div>
+                                )
+                            }
+                        </AnimatePresence>
+                    </div>
+                    
                 </motion.div>
             </div>
         </div>

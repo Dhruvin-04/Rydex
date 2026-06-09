@@ -20,6 +20,7 @@ const VEHICLE_META: any = {
 }
 
 export interface IVehicle {
+    _id: string;
     owner: string
     type: vehicleType;
     imageUrl?: string;
@@ -209,8 +210,9 @@ useEffect(() => {
                         pickup,
                         drop,
                         vehicle: v.type,
+                        vehicleId: String(v._id),
                         driverId: v.owner,
-                        fare: String((v.baseFare || 0) + (v.pricePerKm || 0) * km),
+                        fare: String(Math.round((v.baseFare || 0) + (v.pricePerKm || 0) * km)),
                         pickUpLatitude: String(pickUpLat),
                         pickUpLongitude: String(pickUpLng),
                         dropLatitude: String(dropLat),
