@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-type BookingStatus = "requested" | "awaiting_payment" | "confirmed" | "started" | "completed" | "cancelled" | "rejected" | "expired" | "idle";
+export type BookingStatus = "requested" | "awaiting_payment" | "confirmed" | "started" | "completed" | "cancelled" | "rejected" | "expired" | "idle";
 
-type PaymentStatus = "pending" | "paid" | "cash" | "failed";
+export type PaymentStatus = "pending" | "paid" | "cash" | "failed";
 
 export interface IBooking{
     user: mongoose.Types.ObjectId;
@@ -23,6 +23,7 @@ export interface IBooking{
     driverMobile: string;
     bookingStatus: BookingStatus;
     paymentStatus: PaymentStatus;
+    paymentDeadline: Date;
     adminCommission: number;
     partnerEarnings: number;
     pickupOtp: string;
@@ -94,6 +95,9 @@ const bookingSchema = new mongoose.Schema<IBooking>({
         type: String,
         enum: ["pending", "paid", "cash", "failed"],
         default: "pending"
+    },
+    paymentDeadline: {
+        type: Date,
     },
     adminCommission: {
         type: Number,

@@ -2,8 +2,39 @@
 import React, { useEffect, useState } from 'react'
 import {motion} from 'motion/react'
 import axios from 'axios'
-import { IBooking } from '@/models/booking.model'
+import { BookingStatus, PaymentStatus } from '@/models/booking.model'
 import { Clock, IndianRupee, Loader2, MapPin, Navigation } from 'lucide-react'
+
+interface IBooking{
+    _id: string;
+    user: string;
+    driver: string;
+    vehicle: string;
+    pickupAddress: string;
+    dropAddress: string;
+    pickupLocation: {
+        type: "Point",
+        coordinates: [number, number]
+    },
+    dropLocation: {
+        type: "Point",
+        coordinates: [number, number]
+    },
+    fare: number;
+    userMobile: string;
+    driverMobile: string;
+    bookingStatus: BookingStatus;
+    paymentStatus: PaymentStatus;
+    paymentDeadline: Date;
+    adminCommission: number;
+    partnerEarnings: number;
+    pickupOtp: string;
+    pickupOtpExpires: Date;
+    dropOtp: string;
+    dropOtpExpires: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
 
 const page = () => {
 
@@ -22,6 +53,24 @@ const page = () => {
       setLoading(false)
     }
   }
+
+  const handleAccept = async (id: string) => {
+    try{
+      const {data} = await axios.get(`/api/partner/bookings/${id}/accept`)
+      console.log(data)
+    }catch(error){
+      console.error('Error accepting booking:', error)
+    }
+  }
+  const handleReject = async (id: string) => {
+    try{
+      const {data} = await axios.get(`/api/partner/bookings/${id}/reject`)
+      console.log(data)
+    }catch(error){
+      console.error('Error rejecting booking:', error)
+    }
+  }
+
   useEffect(() => {
     pendingRequests()
   }, [])
@@ -93,10 +142,10 @@ const page = () => {
                           </div>
                         </div>
                         <div className='flex gap-4 w-full lg:w-auto'>
-                          <button className='flex-1 lg:flex-none px-6 py-3 rounded-xl border border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:bg-gray-100 transition-all duration-200 active:scale-[0.98] disabled:opacity-50'>
+                          <button className='flex-1 lg:flex-none px-6 py-3 rounded-xl border border-gray-300 bg-white text-gray-700 text-sm font-semibold hover:bg-gray-100 transition-all duration-200 active:scale-[0.98] disabled:opacity-50' onClick={() => handleReject(booking._id)}>
                             Reject
                           </button>
-                          <button className='flex-1 lg:flex-none px-6 py-3 rounded-xl border border-transparent bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 shadow-md flex items-center justify-center gap-2'>
+                          <button className='flex-1 lg:flex-none px-6 py-3 rounded-xl border border-transparent bg-black text-white text-sm font-semibold hover:bg-gray-900 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 shadow-md flex items-center justify-center gap-2' onClick={() => handleAccept(booking._id)}>
                             Accept Ride
                           </button>
                         </div>
