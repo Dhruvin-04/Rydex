@@ -13,7 +13,7 @@ const VEHICLE_META: any = {
     truck: { label: 'Truck', Icon: Truck },
 }
 
-type Status = "idle" | "requested" | "awaiting_payment" | "confirmed" | "payment" | "cancelled" | "rejected" | "expired";
+type Status = "idle" | "requested" | "awaiting_payment" | "confirmed" | "payment" | "rejected" | "expired";
 
 const page = () => {
     const router = useRouter()
@@ -77,11 +77,26 @@ const page = () => {
         try{
             const { data } = await axios.get(`/api/booking/${booking._id}/cancel`)
             console.log(data)
-            setStatus('cancelled')
+            setStatus('idle')
         }catch(error){
             console.log('Error cancelling booking:', error)
         }
     }
+
+    const handleConfirmPayment = async () => {
+        try{
+            const { data } = await axios.post('/api/payment/create', {
+                bookingId: booking._id,
+                paymentMode: paymentMethod.toUpperCase()
+            })
+            if (data.url) {
+                window.location.href = data.url
+            }
+        }catch(error){
+            console.log('Error confirming payment:', error)
+        }
+    }
+
     useEffect(() => {
         fetchActiveBooking()
     }, [])
@@ -344,6 +359,7 @@ const page = () => {
                                                 })}
                                             </div>
                                             <motion.button
+                                                onClick={handleConfirmPayment}
                                                 whileTap={{ scale: 0.95 }}    
                                                 whileHover={paymentMethod ? { scale: 1.05 }:{}}        
                                                 disabled={!paymentMethod}

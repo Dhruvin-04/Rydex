@@ -4,6 +4,7 @@ import {motion} from 'motion/react'
 import axios from 'axios'
 import { BookingStatus, PaymentStatus } from '@/models/booking.model'
 import { Clock, IndianRupee, Loader2, MapPin, Navigation } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface IBooking{
     _id: string;
@@ -37,7 +38,7 @@ interface IBooking{
 }
 
 const page = () => {
-
+  const router = useRouter()
   const [bookings, setBookings] = useState<IBooking[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -57,7 +58,7 @@ const page = () => {
   const handleAccept = async (id: string) => {
     try{
       const {data} = await axios.get(`/api/partner/bookings/${id}/accept`)
-      console.log(data)
+      router.push(`/partner/bookings`)
     }catch(error){
       console.error('Error accepting booking:', error)
     }
@@ -65,7 +66,7 @@ const page = () => {
   const handleReject = async (id: string) => {
     try{
       const {data} = await axios.get(`/api/partner/bookings/${id}/reject`)
-      console.log(data)
+      window.location.reload()
     }catch(error){
       console.error('Error rejecting booking:', error)
     }
