@@ -17,6 +17,9 @@ export async function POST(req: NextRequest) {
         if (paymentMode === 'CASH') {
             booking.paymentStatus = 'cash'
             booking.bookingStatus = 'confirmed'
+            const adminCommission = booking.fare * 0.1; 
+            booking.adminCommission = adminCommission;
+            booking.partnerEarnings = booking.fare - adminCommission;
             await booking.save()
             return NextResponse.json({
                 message: "Payment selected as cash", 

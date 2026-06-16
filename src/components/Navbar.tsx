@@ -81,7 +81,7 @@ const Navbar = () => {
                                         if (item === "Home") {
                                             href = `/`
                                         } else {
-                                            href = `/${item.toLowerCase()}`
+                                            href = `/user/${item.toLowerCase()}`
                                         }
                                         var active = href === pathname
                                         return <Link key={index} href={href} className={`text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition ${active ? 'text-white' : 'text-gray-400 hover:text-white'}`}>{item}</Link>

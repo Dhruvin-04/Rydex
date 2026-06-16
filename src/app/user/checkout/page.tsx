@@ -31,7 +31,6 @@ const page = () => {
     const fare = Math.round(Number(params.get('fare')) || 0)
     const { Icon, label } = VEHICLE_META[vehicle]
     const [status, setStatus] = useState<Status>("idle")
-    const [handle, setHandle] = useState<Status>('idle')
     const [booking, setBooking] = useState<any>('')
     const [loading, setLoading] = useState(false)
     const [paymentMethod, setPaymentMethod] = useState<"cash" | "online">("cash")
@@ -91,7 +90,10 @@ const page = () => {
             })
             if (data.url) {
                 window.location.href = data.url
+            } else {
+                setStatus('confirmed')
             }
+            
         }catch(error){
             console.log('Error confirming payment:', error)
         }
@@ -378,6 +380,38 @@ const page = () => {
                                                     </>
                                                 )
                                                 }
+                                            </motion.button>
+                                        </motion.div>
+                                    )
+                                }
+                                {
+                                    status === "confirmed" && (
+                                        <motion.div
+                                            key="confirmed"
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.35 }}
+                                            className='flex flex-1 flex-col items-center text-center gap-6 justify-center'
+                                        >
+                                            <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 0.2 }}
+                                            >
+                                                <CheckCircle size={44} className='text-gray-900' />
+                                            </motion.div>
+                                            <h2 className='text-2xl font-bold text-gray-800'>Payment Confirmed</h2>
+                                            <p className='text-gray-600'>
+                                                Your payment has been confirmed successfully.
+                                            </p>
+                                            <motion.button
+                                                onClick={() => router.push(`/ride/${booking._id}`)}
+                                                whileTap={{ scale: 0.95 }}
+                                                whileHover={{ scale: 1.05 }}
+                                                className='w-full h-14 mt-4 bg-zinc-900 hover:bg-black text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-md'
+                                            >
+                                                <span>Track Ride</span>
                                             </motion.button>
                                         </motion.div>
                                     )

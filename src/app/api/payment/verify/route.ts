@@ -24,6 +24,9 @@ export async function GET(req: NextRequest) {
             if (booking && booking.paymentStatus !== 'paid') {
                 booking.paymentStatus = 'paid';
                 booking.bookingStatus = 'confirmed';
+                const adminCommission = booking.fare * 0.1; 
+                booking.adminCommission = adminCommission;
+                booking.partnerEarnings = booking.fare - adminCommission;
                 await booking.save();
             }
 
