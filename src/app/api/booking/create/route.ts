@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import connectDB from "@/lib/db";
 import Booking from "@/models/booking.model";
 import User from "@/models/user.model";
+import axios from "axios";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -39,6 +40,11 @@ export async function POST(request: NextRequest) {
             userMobile: mobileNumber,
             driverMobile: driver.mobileNumber,
             bookingStatus: "requested",
+        })
+        await axios.post(`${process.env.NEXT_PUBLIC_SOCKET_SERVER_URL}/emit`, {
+            event: 'newBooking',
+            userId: driverId,
+            data: booking
         })
         return NextResponse.json(booking, {status: 200})
     }catch(error){

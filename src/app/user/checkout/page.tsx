@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { ArrowRight, Banknote, Bike, Car, CheckCircle, Clock, CreditCard, IndianRupee, Loader2, MapPin, Navigation, Shield, Truck, Wallet, XCircle } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import axios from 'axios'
+import { getSocket } from '@/lib/socket'
 
 const VEHICLE_META: any = {
     bike: { label: 'Bike', Icon: Bike },
@@ -109,6 +110,19 @@ const page = () => {
         }, 2000)
         return () => clearTimeout(t)
     }, [status])
+    useEffect(() => {
+        const socket = getSocket()
+        socket.on('acceptBooking', (data) => {
+          setStatus(data)
+        })
+        socket.on('rejectBooking', (data) => {
+          setStatus(data)
+        })
+        return () => {
+          socket.off('acceptBooking')
+          socket.off('rejectBooking')
+        }
+      }, [])
     return (
         <div className='min-h-screen bg-zinc-100 px-4 py-12'>
             <div className='relative max-w-6xl mx-auto z-10'>
@@ -197,7 +211,7 @@ const page = () => {
                         <div className='p-6 sm:p-8 flex flex-col gap-6 flex-1'>
                             <AnimatePresence mode='wait'>
                                 {
-                                    status === "idle" && (
+                                    (status === "idle" || status === "rejected") && (
                                         <motion.div
                                             key="idle"
                                             initial={{ opacity: 0, y: 20 }}

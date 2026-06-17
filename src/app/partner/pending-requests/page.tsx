@@ -5,6 +5,7 @@ import axios from 'axios'
 import { BookingStatus, PaymentStatus } from '@/models/booking.model'
 import { Clock, IndianRupee, Loader2, MapPin, Navigation } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { getSocket } from '@/lib/socket'
 
 interface IBooking{
     _id: string;
@@ -75,6 +76,17 @@ const page = () => {
   useEffect(() => {
     pendingRequests()
   }, [])
+
+  useEffect(() => {
+    const socket = getSocket()
+    socket.on('newBooking', (data) => {
+      setBookings(prev => [data, ...prev])
+    })
+    return () => {
+      socket.off('newBooking')
+    }
+  }, [])
+  
   return (
     <div className='w-full min-h-screen'>
       <div className='bg-white border-b border-gray-200'>
