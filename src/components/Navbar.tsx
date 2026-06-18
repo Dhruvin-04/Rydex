@@ -14,6 +14,7 @@ import { signOut } from 'next-auth/react'
 import { setUserData } from '@/redux/userSlice'
 import { set } from 'mongoose'
 import axios from 'axios'
+import { getSocket } from '@/lib/socket'
 
 const NavItem = ['Home', 'Bookings', 'About Us', 'Contact']
 const Navbar = () => {
@@ -50,6 +51,16 @@ const Navbar = () => {
             fetchCount()
         }
     }, [userData?.role])
+
+    useEffect(() => {
+        const socket = getSocket()
+        socket.on('newBooking', (data) => {
+            setPendingCount(prevCount => prevCount + 1)
+        })
+        return () => {
+          socket.off('newBooking')
+        }
+      }, [])
 
     return (
         <>

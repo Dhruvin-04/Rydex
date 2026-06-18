@@ -239,7 +239,7 @@ const page = () => {
                             {booking.paymentStatus}
                           </span>
                         </div>
-                        {booking.bookingStatus !== 'completed' && (
+                        {(booking.bookingStatus === 'completed' || booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'started' ) && (
                           <div className='flex items-center gap-2'>
                             <button
                               onClick={() => {
