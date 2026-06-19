@@ -9,6 +9,12 @@ type LiveRideMapProps = {
     pickUpLocation: [number, number] | null;
     dropLocation: [number, number] | null;
     mapStatus?: 'arriving' | 'ongoing' | 'completed';
+    onStats: (data: {
+        distanceToPickup: number;
+        etaToPickup: number;
+        distanceToDrop: number;
+        etaToDrop: number;
+    }) => void;
 }
 
 const pickUpIcon = new L.DivIcon({
@@ -60,7 +66,7 @@ const driverIcon = new L.DivIcon({
 
 
 
-const LiveRideMap = ({ driverLocation, pickUpLocation, dropLocation, mapStatus }: LiveRideMapProps) => {
+const LiveRideMap = ({ driverLocation, pickUpLocation, dropLocation, mapStatus, onStats }: LiveRideMapProps) => {
 
     const [routeToPickup, setRouteToPickup] = useState<[number, number] | []>([])
     const [routeToDrop, setRouteToDrop] = useState<[number, number] | []>([])
@@ -83,10 +89,23 @@ const LiveRideMap = ({ driverLocation, pickUpLocation, dropLocation, mapStatus }
                     if (pickupRoute) setRouteToPickup(pickupRoute.geometry.coordinates.map(([lon, lat]: number[]) => [lat, lon]))
 
                     if (dropRoute) setRouteToDrop(dropRoute.geometry.coordinates.map(([lon, lat]: number[]) => [lat, lon]))
+                    
+                    onStats?.({
+                        distanceToPickup: (pickupRoute?.distance ?? 0)/1000, 
+                        etaToPickup: (pickupRoute?.duration ?? 0)/60,
+                        distanceToDrop: (dropRoute?.distance ?? 0)/1000, 
+                        etaToDrop: (dropRoute?.duration ?? 0)/60
+                    })
                 } else {
                     setRouteToPickup([])
                     const dropRoute = await getRoute(drLat, drLong, dLat, dLong)
                     if (dropRoute) setRouteToDrop(dropRoute.geometry.coordinates.map(([lon, lat]: number[]) => [lat, lon]))
+                    onStats?.({
+                        distanceToPickup: 0, 
+                        etaToPickup: 0,
+                        distanceToDrop: (dropRoute?.distance ?? 0)/1000, 
+                        etaToDrop: (dropRoute?.duration ?? 0)/60
+                    })
                 }
             } catch (error) {
                 console.error('Error fetching route:', error)
