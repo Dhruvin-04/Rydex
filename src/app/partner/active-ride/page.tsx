@@ -96,7 +96,7 @@ const page = () => {
     const displayEta = status=='confirmed' ? etaToPickup : etaToDrop
     const displayDistance = status=='confirmed' ? distanceToPickup : distanceToDrop
     const paymentStatus = PAYMENT_BADGE[booking?.paymentStatus! ?? 'pending']
-    const panelProps = { isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle }
+    const panelProps = { isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole: "driver"}
 
     if(loading){
         return (

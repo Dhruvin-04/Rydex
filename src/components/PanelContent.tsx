@@ -6,21 +6,14 @@ import RideChat from './RideChat'
 import { RootState } from '@/redux/store'
 import { useSelector } from 'react-redux'
 
-const PanelContent = ({ isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle }: any) => {
-    const {userData} = useSelector((state: RootState) => state.user)
-    let currentRole
-    useEffect(() => {
-        if(userData){
-            currentRole = userData?._id === booking?.driver?._id ? 'driver' : 'user'
-        }
-    }, [userData?._id])
+const PanelContent = ({ isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole }: any) => {
     
   return (
-    <div className='flex flex-col gap-4 pt-5 pb-4'>
+    <div className='flex flex-col gap-4 pb-3'>
         {isActive && (
             <div className='mx-5 lg:mx-6 grid grid-cols-2 gap-2'>
                 <div className='bg-zinc-100 border border-zinc-200 rounded-2xl p-4 flex items-center gap-3'>
-                    <div className='w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center shrink-0'>
+                    <div className='w-8 h-8 rounded-full bg-zinc-200 flex items-center justify-center shrink-0'>
                         <Clock className='text-zinc-500' size={16}/>
                     </div>
                     <div>
@@ -29,7 +22,7 @@ const PanelContent = ({ isActive, displayEta, displayDistance, cfg, status, book
                     </div>
                 </div>
                 <div className='bg-zinc-950 rounded-2xl p-4 flex items-center gap-3'>
-                    <div className='w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0'>
+                    <div className='w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0'>
                         <IndianRupee className='text-white' size={16}/>
                     </div>
                     <div>
