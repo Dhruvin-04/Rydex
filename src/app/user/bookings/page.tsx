@@ -9,6 +9,7 @@ import { motion } from 'motion/react'
 import { useRouter } from 'next/navigation';
 
 interface IBooking {
+  _id: string;
   user: IUser;
   driver: IUser;
   vehicle: IVehicle;
@@ -243,7 +244,7 @@ const page = () => {
                           <div className='flex items-center gap-2'>
                             <button
                               onClick={() => {
-                                router.push(`/user/active-ride`)
+                                router.push(`/user/ride/${booking._id}`)
                               }}
                               className='flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-md transition'
                             >

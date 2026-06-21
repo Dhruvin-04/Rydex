@@ -6,6 +6,7 @@ import { BookingStatus, IBooking, PaymentStatus } from '@/models/booking.model'
 import axios from 'axios'
 import { ChevronUp, Zap } from 'lucide-react'
 import {motion} from 'motion/react'
+import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 const MAP_STATUS: Record<BookingStatus, 'arriving' | 'ongoing' | 'completed'> = {
@@ -52,11 +53,12 @@ const page = () => {
     const [status, setStatus] = useState('')
     const [expanded, setExpanded] = useState(false)
 
+    const {id} = useParams()
     useEffect(() => {
         async function fetch() {
             setLoading(true)
             try {
-                const {data} = await axios.get('/api/partner/my-active')
+                const {data} = await axios.post('/api/user/active-ride', { bookingId: id })
                 console.log('Active booking:', data)
                 setBooking(data)
                 setStatus(data.bookingStatus)
@@ -73,33 +75,7 @@ const page = () => {
 
     useEffect(() => {
         const socket = getSocket()
-        if(!navigator.geolocation) return
-        const watchId = navigator.geolocation.watchPosition(
-            (position) => {
-                const lat = position.coords.latitude
-                const lng = position.coords.longitude
-                setDriverPos([lat, lng])
-                socket.emit('driver-location-update', {
-                    bookingId: booking?._id,
-                    latitude: lat,
-                    longitude: lng,
-                    status: status
-                })
-            }, 
-            (error) => {
-                console.error('Error getting location:', error)
-            },
-            { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
-        )
-        return () => {
-            navigator.geolocation.clearWatch(watchId)
-        }
-    }, [booking?._id])
-
-    useEffect(() => {
-        if(!booking?._id) return
-        const socket = getSocket()
-        socket.emit('join-ride', booking?._id)
+        socket.emit('join-ride', id)
         socket.on('driver-location', ({latitude, longitude}) => {
             setDriverPos([latitude, longitude])
         })
@@ -107,7 +83,7 @@ const page = () => {
             socket.off('join-ride')
             socket.off('driver-location')
         }
-    }, [booking?._id])
+    }, [])
 
     const onChatToggle = () => {
         setChatOpen(prev => !prev)
@@ -120,7 +96,7 @@ const page = () => {
     const displayEta = status=='confirmed' ? etaToPickup : etaToDrop
     const displayDistance = status=='confirmed' ? distanceToPickup : distanceToDrop
     const paymentStatus = PAYMENT_BADGE[booking?.paymentStatus! ?? 'pending']
-    const panelProps = { isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole: "driver"}
+    const panelProps = { isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole: "user"}
 
     if(loading){
         return (
@@ -171,7 +147,7 @@ const page = () => {
             className='lg:w-100 w-full h-full bg-white/95 backdrop-blur-sm border-l border-zinc-200 z-500 hidden lg:flex flex-col gap-4 overflow-hidden'
         >
             <div className='bg-zinc-950 px-6 py-5 shrink-0'>
-                <p className='text-sm text-zinc-400 tracking-widest uppercase font-medium'>Driver Panel</p>
+                <p className='text-sm text-zinc-400 tracking-widest uppercase font-medium'>User Panel</p>
                 <div className='flex items-center gap-4 mt-2 justify-between'>
                     <h1 className='text-lg font-bold text-white'>Active Ride</h1>
                     {isActive && (

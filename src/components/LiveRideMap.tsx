@@ -72,9 +72,9 @@ const LiveRideMap = ({ driverLocation, pickUpLocation, dropLocation, mapStatus, 
     const [routeToDrop, setRouteToDrop] = useState<[number, number] | []>([])
 
     useEffect(() => {
-        if (!driverLocation) return
-        const [pLat, pLong] = pickUpLocation ?? [0, 0]
-        const [dLat, dLong] = dropLocation ?? [0, 0]
+        if (!driverLocation || !pickUpLocation || !dropLocation) return
+        const [pLat, pLong] = pickUpLocation 
+        const [dLat, dLong] = dropLocation
         const [drLat, drLong] = driverLocation
         const getRoute = async (startLat: number, startLng: number, endLat: number, endLng: number) => {
             const res = await axios.get(`https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`)

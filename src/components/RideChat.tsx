@@ -1,13 +1,15 @@
 'use client'
 import axios from 'axios'
 import { Send, Sparkle, X } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {AnimatePresence, motion} from 'motion/react'
 import { RootState } from '@/redux/store'
 import { useSelector } from 'react-redux'
 import { Sen } from 'next/font/google'
+import { getSocket } from '@/lib/socket'
 
 type message = {
+  _id: string
   bookingId: string
   sender: 'user' | 'driver'
   text: string
@@ -24,8 +26,14 @@ const RideChat = ({ currentRole, bookingId, userName, driverName }: any) => {
   const {userData} = useSelector((state: RootState) => state.user)
   const [showAI, setShowAI] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   const sendMessage = async () => {
+    const socket = getSocket()
     try{
       const { data } = await axios.post('/api/chat/send', {
         sender: currentRole,
@@ -33,8 +41,7 @@ const RideChat = ({ currentRole, bookingId, userName, driverName }: any) => {
         bookingId
       })
       console.log('Message sent:', data)
-      setMessages([...messages, data])
-      setLastMessage(data.text) 
+      socket.emit('chat-message', data)
       setText('')
     }catch(err){
       console.error('Error sending message:', err)
@@ -80,6 +87,29 @@ const RideChat = ({ currentRole, bookingId, userName, driverName }: any) => {
     getAllMessages()
   }, [])
 
+  useEffect(() => {
+    const socket = getSocket();
+    
+    // Explicit handler so we don't accidentally remove other chat-message handlers
+    const handleMessage = (data: any) => {
+      console.log('Incoming chat socket message:', data);
+      if(data.bookingId === bookingId) {
+        setMessages((prevMessages) => {
+          // Prevent duplicates
+          if (prevMessages.some((msg) => msg._id === data._id)) return prevMessages;
+          return [...prevMessages, data];
+        });
+        setLastMessage(data.text);
+      }
+    };
+
+    socket.on('chat-message', handleMessage);
+
+    return () => {
+      socket.off('chat-message', handleMessage);
+    };
+  }, [bookingId]);
+
   return (
     <div className='flex flex-col h-full min-h-0 bg-white rounded-2xl overflow-hidden border border-zinc-100'>
       <div className='flex items-center px-4 py-2 border-b border-zinc-100 shrink-0'>
@@ -121,13 +151,15 @@ const RideChat = ({ currentRole, bookingId, userName, driverName }: any) => {
               >
                 <div className={`max-w-[70%] px-4 py-2 rounded-2xl leading-relaxed shadow-sm ${isMine ? 'bg-zinc-900 text-white rounded-br-sm' : 'bg-zinc-100 text-zinc-900 rounded-bl-sm'}`}>
                   <p className='text-sm wrap-break-word'>{msg.text}</p>
-                  <span className='text-[8px] text-zinc-200'>{formatTime(msg.createdAt)}</span>
+                  <span className={`text-[8px] ${isMine ? 'text-zinc-300' : 'text-zinc-500'}`}>{formatTime(msg.createdAt)}</span>
                 </div>
               </motion.div>
             )
           })
         )}
+        <div ref={messagesEndRef} />
       </div>
+
 
     <AnimatePresence>
         {showAI && messages.length > 0 && (

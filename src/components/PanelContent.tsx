@@ -1,10 +1,23 @@
 'use client'
-import { Clock, IndianRupee, MessageCircle, Phone, User } from 'lucide-react'
+import { Bike, Car, Clock, IndianRupee, MessageCircle, Phone, Truck, User } from 'lucide-react'
 import React, { useEffect } from 'react'
 import {AnimatePresence, motion} from 'motion/react'
 import RideChat from './RideChat'
 import { RootState } from '@/redux/store'
 import { useSelector } from 'react-redux'
+
+const getVehicleIcon = (vehicleType: string) => {
+    switch (vehicleType?.toLowerCase()) {
+      case 'bike':
+        return <Bike className='text-white' size={18} />
+      case 'auto':
+      case 'car':
+        return <Car className='text-white' size={18} />
+      case 'truck':
+      case 'loading':
+        return <Truck className='text-white' size={18} />
+    }
+  }
 
 const PanelContent = ({ isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole }: any) => {
     
@@ -101,6 +114,48 @@ const PanelContent = ({ isActive, displayEta, displayDistance, cfg, status, book
                 </motion.div>
             )}
         </AnimatePresence>
+        {booking?.vehicle && (
+            <div className='mx-5 lg:mx-6'>
+                <div className='bg-zinc-50 border border-zinc-100 rounded-2xl p-4 flex items-center gap-3'>
+                    <div className='w-11 h-11 rounded-xl bg-zinc-900 flex items-center justify-center shrink-0'>
+                        {getVehicleIcon(booking.vehicle.type)}
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                        <p className='text-xs font-medium text-zinc-500 uppercase tracking-wider'>Your Vehicle</p>
+                        <p className='text-lg font-black text-zinc-900'>{booking.vehicle.model || 'Vehicle'}</p>
+                    </div>
+                    <div className='shrink-0 bg-zinc-900 px-3 py-1.5 rounded-xl'>
+                        <p className='text-white text-xs font-bold tracking-widest font-mono'>{booking.vehicle.licensePlate || 'Number'}</p>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        <div className='mx-5 lg:mx-6'>
+            <div className='bg-zinc-50 border border-zinc-100 rounded-2xl overflow-hidden'>
+                <div className='border-b border-zinc-100 px-4 py-3 flex gap-2'>
+                    <div className='flex flex-col items-center shrink-0 pt-1'>
+                        <div className='w-3 h-3 rounded-full bg-zinc-900 border-2 border-white shadow-sm'/>
+                        <div className='w-px mt-1 bg-zinc-300' style={{ height: 20 }}/>
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                        <p className='text-xs font-medium text-zinc-500 uppercase tracking-wider mb-0.5'>Pickup</p>
+                        <p className='text-sm font-black text-zinc-800 leading-snug'>{booking?.pickupAddress || 'Location'}</p>
+                    </div>
+                </div>
+                <div className='border-b border-zinc-100 px-4 py-3 flex gap-2'>
+                    <div className='flex flex-col items-center shrink-0 pt-1'>
+                        <div className='w-3 h-3 rounded-full bg-zinc-900 border-2 border-white shadow-sm'/>
+                        <div className='w-px mt-1 bg-zinc-300' style={{ height: 20 }}/>
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                        <p className='text-xs font-medium text-zinc-500 uppercase tracking-wider mb-0.5'>Drop</p>
+                        <p className='text-sm font-black text-zinc-800 leading-snug'>{booking?.dropAddress || 'Location'}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
   )
 }
