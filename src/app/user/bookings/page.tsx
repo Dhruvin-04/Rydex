@@ -240,7 +240,7 @@ const page = () => {
                             {booking.paymentStatus}
                           </span>
                         </div>
-                        {booking.bookingStatus !== 'completed' && (
+                        {(booking.bookingStatus === 'confirmed' || booking.bookingStatus === 'started' || booking.bookingStatus === 'completed') && (
                           <div className='flex items-center gap-2'>
                             <button
                               onClick={() => {
@@ -254,8 +254,6 @@ const page = () => {
                           </div>
                         )}
                       </div>
-
-
                     </div>
                   </motion.div>
                 ))}

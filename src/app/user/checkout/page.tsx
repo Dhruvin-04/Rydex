@@ -420,7 +420,7 @@ const page = () => {
                                                 Your payment has been confirmed successfully.
                                             </p>
                                             <motion.button
-                                                onClick={() => router.push(`/ride/${booking._id}`)}
+                                                onClick={() => router.push(`/user/ride/${booking._id}`)}
                                                 whileTap={{ scale: 0.95 }}
                                                 whileHover={{ scale: 1.05 }}
                                                 className='w-full h-14 mt-4 bg-zinc-900 hover:bg-black text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-md'

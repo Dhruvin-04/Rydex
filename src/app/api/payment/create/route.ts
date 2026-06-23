@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
             await booking.save()
             return NextResponse.json({
                 message: "Payment selected as cash", 
-                url: `${baseUrl}/ride/${booking._id}`
+                url: `${baseUrl}/user/ride/${booking._id}`
             }, {status: 200})
         } else {
             const order = await stripe.checkout.sessions.create({

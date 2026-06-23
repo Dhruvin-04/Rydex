@@ -1,4 +1,5 @@
 'use client'
+import CompletedScreen from '@/components/CompletedScreen'
 import LiveRideMap from '@/components/LiveRideMap'
 import PanelContent from '@/components/PanelContent'
 import { getSocket } from '@/lib/socket'
@@ -98,6 +99,12 @@ const page = () => {
     const paymentStatus = PAYMENT_BADGE[booking?.paymentStatus! ?? 'pending']
     const panelProps = { isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole: "user"}
 
+    if(status==='completed' && booking){
+        return(
+            <CompletedScreen booking={booking} role='user' />
+        )
+    }
+
     if(loading){
         return (
             <div className='h-screen w-full flex items-center justify-center bg-zinc-900'>
@@ -167,7 +174,7 @@ const page = () => {
 
         <div className={`lg:hidden fixed bottom-0 left-0 right-0 pointer-events-none z-500`}>
             <motion.div
-                className='bg-white rounded-t-3xl shadow-2xl pointer-events-auto overflow-hidden border border-zinc-200'
+                className='bg-white rounded-t-3xl shadow-2xl pointer-events-auto overflow-hidden border border-zinc-200 flex flex-col'
                 animate={{ height: expanded ? '82vh' : 142 }}
                 transition={{type: 'spring', stiffness: 320, damping: 38}}
             >
@@ -201,12 +208,12 @@ const page = () => {
                     </div>
 
                     <div className='h-px bg-zinc-200 mx-5'/>
+                </div>
 
                     <div className='flex-1 overflow-y-auto min-h-0'>
                         <PanelContent {...panelProps} />
                     </div>
 
-                </div>
             </motion.div>
         </div>
 
