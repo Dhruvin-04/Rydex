@@ -453,7 +453,7 @@ const page = () => {
                                 exit={{ opacity: 0, scale: 0.95, y: 6 }}
                                 transition={{ duration: 0.25 }}
                                 onClick={handleSendPickupOtp}
-                                className='flex items-center justify-center gap-2 w-full bg-zinc-900 hover:bg-zinc-800 active:bg-zinc-700 transition-colors text-sm tracking-wide transition-all text-white rounded-xl font-semibold py-3.5 shadow-lg'
+                                className='flex items-center justify-center gap-2 w-full bg-zinc-900 hover:bg-zinc-800 active:bg-zinc-700 text-sm tracking-wide transition-all text-white rounded-xl font-semibold py-3.5 shadow-lg'
                             >
                                 <MapPin size={16} /> I've Arrived at Pickup <ArrowRight size={16} className='ml-1'/>
                             </motion.button>
@@ -498,7 +498,7 @@ const page = () => {
                                             Cancel
                                         </button>
                                         <button onClick={handleVerifyPickupOtp} disabled={otp.length < 4 || loadingOtp}
-                                            className='flex-1 bg-zinc-900 text-white p-3.5 rounded-lg hover:bg-zinc-800 active:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed transition-all'>
+                                            className='flex-1 bg-zinc-900 text-white p-3.5 rounded-lg hover:bg-zinc-800 active:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all'>
                                             {
                                                 loadingOtp
                                                     ? <Loader2 size={18} className='animate-spin mx-auto'/>
@@ -519,7 +519,7 @@ const page = () => {
                                 exit={{ opacity: 0, scale: 0.95, y: 6 }}
                                 transition={{ duration: 0.25 }}
                                 onClick={handleSendDropOtp}
-                                className='flex items-center justify-center gap-2 w-full bg-zinc-900 hover:bg-zinc-800 active:bg-zinc-700 transition-colors text-sm tracking-wide transition-all text-white rounded-xl font-semibold py-3.5 shadow-lg'
+                                className='flex items-center justify-center gap-2 w-full bg-zinc-900 hover:bg-zinc-800 active:bg-zinc-700 text-sm tracking-wide transition-all text-white rounded-xl font-semibold py-3.5 shadow-lg'
                             >
                                 <Navigation size={16} /> Mark as Dropped <ArrowRight size={16} className='ml-1'/>
                             </motion.button>
@@ -530,9 +530,9 @@ const page = () => {
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: 6 }}
                                 transition={{ duration: 0.25 }}
-                                className='bg-zinc-50 border border-zonc-200 rounded-2xl overflow-hidden'
+                                className='bg-zinc-50 border border-zinc-200 rounded-2xl overflow-hidden'
                             >
-                                <div className='bg-zonc-900 px-4 py-3 flex items-center gap-2'>
+                                <div className='bg-zinc-900 px-4 py-3 flex items-center gap-2'>
                                     <KeyRound className='text-white' size={18}/>
                                     <p className='text-sm font-bold text-white tracking-wide uppercase'>Enter Customer Otp</p>
                                 </div>
@@ -560,11 +560,11 @@ const page = () => {
                                     )}
 
                                     <div className='flex items-center gap-2 mt-3'>
-                                        <button onClick={() => {setDropOtpMode(false); setDropOtp(""); setDropOtpError("")}} className='flex-1 border border-zonc-200 bg-white text-zonc-700 py-3 rounded-xl text-sm font-semibold active:scale-[0.97] transition-all'>
+                                        <button onClick={() => {setDropOtpMode(false); setDropOtp(""); setDropOtpError("")}} className='flex-1 border border-zinc-200 bg-white text-zinc-700 py-3 rounded-xl text-sm font-semibold active:scale-[0.97] transition-all'>
                                             Cancel
                                         </button>
                                         <button onClick={handleVerifyDropOtp} disabled={dropOtp.length < 4 || loadingDropOtp}
-                                            className='flex-1 bg-zinc-900 text-white p-3.5 rounded-lg hover:bg-zinc-800 active:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed transition-all'>
+                                            className='flex-1 bg-zinc-900 text-white p-3.5 rounded-lg hover:bg-zinc-800 active:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all'>
                                             {
                                                 loadingDropOtp
                                                     ? <Loader2 size={18} className='animate-spin mx-auto'/>

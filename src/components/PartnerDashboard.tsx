@@ -12,6 +12,7 @@ import { a } from 'motion/react-client'
 import axios from 'axios'
 import PricingModal from './PricingModal'
 import { IVehicle } from '@/models/vehicle.model'
+import PartnerEarnings from './PartnerEarnings'
 
 type Step = {
   id: number,
@@ -209,6 +210,8 @@ const PartnerDashboard = () => {
             </motion.div>
           )
         }
+
+        <PartnerEarnings/>
 
       </div>
       <PricingModal

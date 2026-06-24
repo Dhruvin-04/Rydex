@@ -28,6 +28,8 @@
     "react-dom": "19.2.4",
     "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
+    "rechart": "^0.0.1",
+    "recharts": "^3.9.0",
     "shadcn": "^4.1.0",
     "socket.io-client": "^4.8.3",
     "stripe": "^22.2.1",

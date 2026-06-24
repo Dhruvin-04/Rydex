@@ -8,6 +8,7 @@ import TabButton from './TabButton'
 import { set } from 'mongoose'
 import { AnimatePresence, motion } from 'motion/react'
 import ContentList from './ContentList'
+import AdminEarning from './AdminEarning'
 
 type Stats = {
   totalPartners: number,
@@ -101,7 +102,10 @@ const AdminDashboard = () => {
             {activeTab === "vehicle" && <ContentList data={vehicleReviews || []} type="vehicle" />}
           </motion.div>
         </AnimatePresence>
+        <AdminEarning  />
       </main>
+
+
     </div>
   )
 }

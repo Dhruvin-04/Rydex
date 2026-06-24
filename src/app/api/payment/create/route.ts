@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin || 'http://localhost:3000';
 
         if (paymentMode === 'CASH') {
-            booking.paymentStatus = 'cash'
+            booking.paymentStatus = 'paid'
             booking.bookingStatus = 'confirmed'
             const adminCommission = booking.fare * 0.1; 
             booking.adminCommission = adminCommission;
