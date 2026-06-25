@@ -1,6 +1,7 @@
 'use client'
 import CompletedScreen from '@/components/CompletedScreen'
-import LiveRideMap from '@/components/LiveRideMap'
+import dynamic from 'next/dynamic'
+const LiveRideMap = dynamic(() => import('@/components/LiveRideMap'), { ssr: false })
 import PanelContent from '@/components/PanelContent'
 import { getSocket } from '@/lib/socket'
 import { BookingStatus, IBooking, PaymentStatus } from '@/models/booking.model'

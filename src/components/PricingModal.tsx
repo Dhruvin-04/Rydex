@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import {AnimatePresence, motion} from 'motion/react'
 import { ImagePlus, IndianRupee } from 'lucide-react'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 interface PricingModalProps {
     open: boolean,
@@ -18,6 +19,7 @@ const PricingModal = ({ open, onClose, data }: PricingModalProps) => {
     const [pricePerKm, setPricePerKm] = useState("")
     const [waitingCharge, setWaitingCharge] = useState("")
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
     const handleSubmit = async () => {
         setLoading(true)
         try {
@@ -32,6 +34,7 @@ const PricingModal = ({ open, onClose, data }: PricingModalProps) => {
             console.log(data)
             setLoading(false)
             onClose()
+            window.location.href = '/'
         } catch (error) {
             console.error(error)
             setLoading(false)

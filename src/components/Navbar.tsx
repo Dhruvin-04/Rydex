@@ -34,6 +34,7 @@ const Navbar = () => {
         await signOut({ redirect: false })
         dispatch(setUserData(null))
         setProfileOpen(false)
+        window.location.href = '/'
     }
 
     const fetchCount = async () => {
@@ -181,7 +182,7 @@ const Navbar = () => {
             <AnimatePresence>
                 {menuOpen && (
                     <>
-                        <motion.div
+                        <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 0.4 }}
                             exit={{ opacity: 0 }}
@@ -196,16 +197,27 @@ const Navbar = () => {
                             className='fixed top-21 left-0.5 -translate-x-0.5 w-[92%] bg-[#0B0B0B] rounded-2xl shadow-2xl z-40 md:hidden overflow-hidden'
                         >
                             <div className='flex flex-col divide-y divide-gray-800'>
-                                {NavItem.map((item, index) => {
-                                    let href
-                                    if (item === "Home") {
-                                        href = `/`
-                                    } else {
-                                        href = `/${item.toLowerCase()}`
-                                    }
-                                    return <Link key={index} href={href} className='px-6 py-4 text-gray-300 hover:bg-white/5'>{item}</Link>
-                                })
-                                }
+                                {userData?.role === 'partner' ? (
+                                    <>
+                                        <Link href='/' className='px-6 py-4 text-gray-300 hover:bg-white/5'>Home</Link>
+                                        <Link className='px-6 py-4 text-gray-300 hover:bg-white/5' href='/partner/pending-requests'>
+                                            Pending Requests
+                                            <span className='bg-white text-black rounded-full w-5 h-5 flex items-center justify-center text-xs ml-2 absolute top-17 left-32'>{pendingCount ?? 0}</span>
+                                        </Link>
+                                        <Link className='px-6 py-4 text-gray-300 hover:bg-white/5' href='/partner/bookings'>Bookings</Link>
+                                        <Link className='px-6 py-4 text-gray-300 hover:bg-white/5' href='/partner/active-ride'>Active Ride</Link>
+                                    </>
+                                ):(
+                                    NavItem.map((item, index) => {
+                                        let href
+                                        if (item === "Home") {
+                                            href = `/`
+                                        } else {
+                                            href = `/user/${item.toLowerCase()}`
+                                        }
+                                        return <Link key={index} href={href} className='px-6 py-4 text-gray-300 hover:bg-white/5'>{item}</Link>
+                                    })
+                                )}
                             </div>
                         </motion.div>
                     </>

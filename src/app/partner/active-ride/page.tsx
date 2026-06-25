@@ -1,6 +1,7 @@
 'use client'
 import CompletedScreen from '@/components/CompletedScreen'
-import LiveRideMap from '@/components/LiveRideMap'
+import dynamic from 'next/dynamic'
+const LiveRideMap = dynamic(() => import('@/components/LiveRideMap'), { ssr: false })
 import PanelContent from '@/components/PanelContent'
 import { getSocket } from '@/lib/socket'
 import { BookingStatus, IBooking, PaymentStatus } from '@/models/booking.model'
@@ -124,6 +125,11 @@ const page = () => {
             setLoading(true)
             try {
                 const {data} = await axios.get('/api/partner/my-active')
+                if(!data){
+                    setLoading(false)
+                    setBooking(null)
+                    return
+                }
                 console.log('Active booking:', data)
                 setBooking(data)
                 setStatus(data.bookingStatus)
@@ -188,6 +194,14 @@ const page = () => {
     const displayDistance = status=='confirmed' ? distanceToPickup : distanceToDrop
     const paymentStatus = PAYMENT_BADGE[booking?.paymentStatus! ?? 'pending']
     const panelProps = { isActive, displayEta, displayDistance, cfg, status, booking, paymentStatus, canChat, chatOpen, onChatToggle, currentRole: "driver"}
+
+    if(!booking){
+        return (
+            <div className='h-screen w-full flex items-center justify-center bg-zinc-900 text-white text-2xl tracking-widest uppercase font-medium p-4 text-center'>
+                No active ride found. Please wait for a new booking or check your booking history.
+            </div>
+        )
+    }
 
     if(status==='completed' && booking){
         return(

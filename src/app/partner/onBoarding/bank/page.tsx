@@ -38,7 +38,7 @@ function page() {
             })
             setLoading(false)
             console.log(data)
-            router.push("/")
+            window.location.href = '/'
         } catch (err: any) {
             setError(err.response?.data?.message || 'Something went wrong')
             setLoading(false)

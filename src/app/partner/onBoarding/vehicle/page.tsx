@@ -33,7 +33,7 @@ function page() {
                 model: vehicleModel
             })
             setLoading(false)
-            router.push("/")
+            router.push("/partner/onBoarding/documents")
         } catch (error:any) {
             setError(error.response?.data?.message || "An error occurred")
             setLoading(false)
@@ -44,9 +44,9 @@ function page() {
         setError("")
         try {
             const {data} = await axios.get("/api/partner/onBoarding/vehicle")
-            setVehicleType(data.type)
-            setVehicleNumber(data.licensePlate)
-            setVehicleModel(data.model)
+            setVehicleType(data.type ?? "")
+            setVehicleNumber(data.licensePlate ?? "")
+            setVehicleModel(data.model ?? "")
 
         } catch (error:any) {
             console.log(error)

@@ -65,6 +65,7 @@ const AuthModel = ({ isOpen, onClose }: AuthModelProps) => {
     })
     setLoading(false)
     console.log(res)
+    window.location.href = '/'
   }
 
   const handleGoogleSignIn = async () => {
