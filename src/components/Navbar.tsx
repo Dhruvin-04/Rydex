@@ -96,6 +96,19 @@ const Navbar = () => {
                                             href = `/user/${item.toLowerCase()}`
                                         }
                                         var active = href === pathname
+
+                                        if (item === 'Bookings' && !userData) {
+                                            return (
+                                                <span
+                                                    key={index}
+                                                    onClick={() => setAuthOpen(true)}
+                                                    className={`text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition text-gray-400 hover:text-white`}
+                                                >
+                                                    {item}
+                                                </span>
+                                            )
+                                        }
+
                                         return <Link key={index} href={href} className={`text-sm md:text-base lg:text-lg font-medium mx-4 cursor-pointer hover:text-gray-300 transition ${active ? 'text-white' : 'text-gray-400 hover:text-white'}`}>{item}</Link>
                                     })
                                 
@@ -215,6 +228,19 @@ const Navbar = () => {
                                         } else {
                                             href = `/user/${item.toLowerCase()}`
                                         }
+
+                                        if (item === 'Bookings' && !userData) {
+                                            return (
+                                                <span
+                                                    key={index}
+                                                    onClick={() => { setMenuOpen(false); setAuthOpen(true); }}
+                                                    className='px-6 py-4 text-gray-300 hover:bg-white/5 cursor-pointer'
+                                                >
+                                                    {item}
+                                                </span>
+                                            )
+                                        }
+
                                         return <Link key={index} href={href} className='px-6 py-4 text-gray-300 hover:bg-white/5'>{item}</Link>
                                     })
                                 )}
